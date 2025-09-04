@@ -18,6 +18,7 @@ interface Next {
 }
 
 export const songdotlink: SongParser = {
+	name: "song.link",
 	hosts: [
 		"song.link",
 		"album.link",
@@ -45,9 +46,9 @@ export const songdotlink: SongParser = {
 
 		const links = sections.flatMap(x => x.links ?? []).filter(x => x.url && x.platform);
 
-		const valid = links.find(x => x.platform === "spotify") ?? links.find(x =>
-			x.platform === "soundcloud"
-		) ?? links.find(x => x.platform === "appleMusic");
+		const valid = links.find(x => x.platform === "spotify")
+			?? links.find(x => x.platform === "soundcloud")
+			?? links.find(x => x.platform === "appleMusic");
 		if (!valid) return null;
 
 		return await parseLink(valid.url);

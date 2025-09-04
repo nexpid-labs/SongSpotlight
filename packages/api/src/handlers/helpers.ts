@@ -2,12 +2,12 @@ import type { MaybePromise } from "bun";
 import type { Song } from "structs/types";
 
 export interface SongParser {
+	name: string;
 	hosts: string[];
 	parse(link: string, host: string, path: string[]): MaybePromise<Song | null>;
 }
 
 export interface SongService extends SongParser {
-	name: string;
 	types: string[];
 	render(type: string, id: string): MaybePromise<RenderSongInfo | null>;
 	validate(type: string, id: string): MaybePromise<boolean>;
