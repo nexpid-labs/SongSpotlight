@@ -79,3 +79,10 @@ export async function validateSong(song: Song): Promise<boolean> {
 	validateCache.set(id, valid);
 	return valid;
 }
+
+export function clearCache() {
+	parseCache.clear();
+	linkCache.clear();
+	renderCache.clear();
+	validateCache.clear();
+}
