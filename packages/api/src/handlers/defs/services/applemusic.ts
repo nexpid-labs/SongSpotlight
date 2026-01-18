@@ -39,7 +39,7 @@ const applemusicToken = makeCache("applemusicToken", async (html?: string) => {
 		url: `https://music.apple.com/${geo}/new`,
 	})).text;
 
-	const asset = html.match(/src="(\/assets\/index-\w+\.js)"/i)?.[1];
+	const asset = html.match(/src="(\/assets\/index~\w+\.js)"/i)?.[1];
 	if (!asset) return;
 
 	const js = (await request({
