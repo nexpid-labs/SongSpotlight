@@ -136,4 +136,7 @@ export const spotify: SongService = {
 	async validate(type, id) {
 		return !(await parseEmbed(type, id))?.props?.pageProps?.title;
 	},
+	rebuild(type, id) {
+		return `https://open.spotify.com/${type}/${id}`;
+	},
 };

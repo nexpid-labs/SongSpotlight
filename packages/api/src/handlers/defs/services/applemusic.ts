@@ -31,8 +31,7 @@ interface APIData {
 	data: [APIDataEntry];
 }
 
-// why not, right
-const geo = "fr", defaultName = "songspotlight";
+const geo = "us", defaultName = "songspotlight";
 
 const applemusicToken = makeCache("applemusicToken", async (html?: string) => {
 	html ??= (await request({
@@ -62,7 +61,7 @@ export const applemusic: SongService = {
 		if (!country || !type || !this.types.includes(type) || !name || !id || fourth) return null;
 
 		const res = await request({
-			url: `https://music.apple.com/${geo}/${type}/${defaultName}/${id}`,
+			url: this.rebuild(type, id) as string,
 		});
 		if (res.status !== 200) return null;
 
@@ -94,7 +93,7 @@ export const applemusic: SongService = {
 			sublabel: attributes.artistName ?? "Top Songs",
 			explicit: attributes.contentRating === "explicit",
 		};
-		const thumbnailUrl = attributes.artwork?.url?.replace("{w}", "128")?.replace("{h}", "128");
+		const thumbnailUrl = attributes.artwork?.url?.replace(/{[wh]}/g, "128");
 
 		if (type === "song") {
 			const duration = attributes.durationInMillis, previewUrl = attributes.previews?.[0]?.url;
@@ -140,7 +139,10 @@ export const applemusic: SongService = {
 	},
 	async validate(type, id) {
 		return (await request({
-			url: `https://music.apple.com/${geo}/${type}/${defaultName}/${id}`,
+			url: this.rebuild(type, id) as string,
 		})).status === 200;
+	},
+	rebuild(type, id) {
+		return `https://music.apple.com/${geo}/${type}/${defaultName}/${id}`;
 	},
 };

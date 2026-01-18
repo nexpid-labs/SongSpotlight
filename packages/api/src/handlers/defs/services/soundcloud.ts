@@ -43,17 +43,19 @@ interface PreviewResponse {
 
 const client_id = "nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic";
 
-async function parseWidget<Tracks extends boolean>(type: string, id: string, tracks: Tracks) {
+function parseWidget(type: string, id: string, tracks: true): Promise<TracksWidgetData | undefined>;
+function parseWidget(type: string, id: string, tracks: false): Promise<WidgetData | undefined>;
+async function parseWidget(type: string, id: string, tracks: boolean) {
 	return (await request({
 		url: `https://api-widget.soundcloud.com/${type}s/${id}${tracks ? "/tracks?limit=20" : ""}`,
 		query: {
 			client_id,
 			// app version isnt static but lets hope soundcloud doesnt mind :) :) :)
-			app_version: "1752674865",
+			app_version: "1764154491",
 			format: "json",
 			representation: "full",
 		},
-	})).json as Tracks extends true ? TracksWidgetData : WidgetData;
+	})).json;
 }
 async function parsePreview(transcodings: Transcoding[]) {
 	const preview = transcodings.sort((a, b) => {
@@ -158,7 +160,7 @@ export const soundcloud: SongService = {
 		let tracks: WidgetData[] = [];
 		if (type === "user") {
 			const got = await parseWidget(type, id, true);
-			if (!got.collection) return null;
+			if (!got?.collection) return null;
 
 			tracks = got.collection;
 		} else {
@@ -192,5 +194,8 @@ export const soundcloud: SongService = {
 	},
 	async validate(type, id) {
 		return (await parseWidget(type, id, false))?.id !== undefined;
+	},
+	async rebuild(type, id) {
+		return (await parseWidget(type, id, false))?.permalink_url ?? null;
 	},
 };

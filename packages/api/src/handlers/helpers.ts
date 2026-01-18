@@ -11,6 +11,7 @@ export interface SongService extends SongParser {
 	types: string[];
 	render(type: string, id: string): MaybePromise<RenderSongInfo | null>;
 	validate(type: string, id: string): MaybePromise<boolean>;
+	rebuild(type: string, id: string): MaybePromise<string | null>;
 }
 
 export interface RenderInfoBase {
