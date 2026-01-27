@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 
 import api from "./api";
 import { TokenPayload } from "./lib/auth";
@@ -13,6 +14,7 @@ interface Variables {
 }
 
 const app = new Hono<{ Variables: Variables; Bindings: Env }>();
+app.use(cors());
 
 // Env assignment
 app.use(async (c, next) => {
