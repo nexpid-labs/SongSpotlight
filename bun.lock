@@ -1,11 +1,12 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "song-spotlight",
       "dependencies": {
         "@hono-rate-limiter/cloudflare": "^0.2.2",
-        "@song-spotlight/api": "1.1.2",
+        "@song-spotlight/api": "^1.1.2",
         "discord-api-types": "^0.38.21",
         "hono": "^4.9.4",
         "jose": "^6.0.13",
