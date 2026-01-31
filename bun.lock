@@ -6,7 +6,7 @@
       "name": "song-spotlight",
       "dependencies": {
         "@hono-rate-limiter/cloudflare": "^0.2.2",
-        "@song-spotlight/api": "^1.1.2",
+        "@song-spotlight/api": "^1.3.0",
         "discord-api-types": "^0.38.21",
         "hono": "^4.9.4",
         "jose": "^6.0.13",
@@ -191,7 +191,7 @@
 
     "@sindresorhus/is": ["@sindresorhus/is@7.0.2", "", {}, "sha512-d9xRovfKNz1SKieM0qJdO+PQonjnnIfSNWfHYnBSJ9hkjm0ZPw6HlxscDXYstp3z+7V2GOFHc+J0CYrYTjqCJw=="],
 
-    "@song-spotlight/api": ["@song-spotlight/api@1.1.2", "", { "dependencies": { "zod": "^4.1.5" }, "peerDependencies": { "typescript": "^5" } }, "sha512-ug3/HcMBxEZ+zEi4MIVIIs1Z9VsmOrlqQgunhAKHHcJThNMC8GyFpgHjyp/MDctasTpSZ9WNGNJbsS8kyO9WYw=="],
+    "@song-spotlight/api": ["@song-spotlight/api@1.3.0", "", { "optionalDependencies": { "zod": "^4.3.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-HwNM6JfycGPjxTnPtKxfPUlG2lD3+PjyTXm4KApPP80nXBMbQO4A79qJBxI1IaBtEQnOsY/1eV/gboxGWgTnrw=="],
 
     "@speed-highlight/core": ["@speed-highlight/core@1.2.7", "", {}, "sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g=="],
 
@@ -484,6 +484,8 @@
     "@humanfs/node/@humanwhocodes/retry": ["@humanwhocodes/retry@0.3.1", "", {}, "sha512-JBxkERygn7Bv/GbN5Rv8Ul6LVknS+5Bp6RgDC/O8gEBU/yeH5Ui5C/OlWrTb6qct7LjjfT6Re2NxB0ln0yYybA=="],
 
     "@poppinss/dumper/supports-color": ["supports-color@10.2.0", "", {}, "sha512-5eG9FQjEjDbAlI5+kdpdyPIBMRH4GfTVDGREVupaZHmVoppknhM29b/S9BkQz7cathp85BVgRi/As3Siln7e0Q=="],
+
+    "@song-spotlight/api/zod": ["zod@4.3.6", "", {}, "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="],
 
     "@typescript-eslint/eslint-plugin/ignore": ["ignore@7.0.5", "", {}, "sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg=="],
 
