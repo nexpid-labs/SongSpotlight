@@ -26,7 +26,6 @@ export async function runSilly() {
 	try {
 		await initWasm(resvgWasm);
 	} catch (error) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		console.error({ silly: { resvg: false, error } });
 		return;
 	}
