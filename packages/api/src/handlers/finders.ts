@@ -20,6 +20,13 @@ function sid(song: Song) {
 
 const parseCache = new Map<string, Song | null>();
 const validateCache = new Map<string, boolean>();
+/**
+ * Tries to parse the provided **link**. Returns a **Song** if successful, or `null` if nothing was found. Either response is temporarily cached.
+ * @example ```ts
+ * await parseLink("https://soundcloud.com/c0ncernn");
+ * // { service: "soundcloud", type: "user", id: "914653456" }
+ * ```
+ */
 export async function parseLink(link: string): Promise<Song | null> {
 	const cleaned = clean(link);
 	if (parseCache.has(cleaned)) return parseCache.get(cleaned)!;
@@ -41,6 +48,13 @@ export async function parseLink(link: string): Promise<Song | null> {
 }
 
 const linkCache = new Map<string, string | null>();
+/**
+ * Tries to recreate the link to the provided **Song**. Returns `string` if successful, or `null` if nothing was found. Either response is temporarily cached.
+ * @example ```ts
+ * await parseLink({ service: "soundcloud", type: "user", id: "914653456" });
+ * // https://soundcloud.com/c0ncernn
+ * ```
+ */
 export async function rebuildLink(song: Song): Promise<string | null> {
 	const id = sid(song);
 	if (linkCache.has(id)) return linkCache.get(id)!;
@@ -55,6 +69,13 @@ export async function rebuildLink(song: Song): Promise<string | null> {
 }
 
 const renderCache = new Map<string, RenderSongInfo | null>();
+/**
+ * Tries to render the provided **Song**. Returns `RenderSongInfo` if successful, or `null` if nothing was found. Either response is temporarily cached.
+ * @example ```ts
+ * await renderSong({ service: "soundcloud", type: "user", id: "914653456" });
+ * // { label: "leroy", sublabel: "Top tracks", explicit: false, form: "list", ... }
+ * ```
+ */
 export async function renderSong(song: Song): Promise<RenderSongInfo | null> {
 	const id = sid(song);
 	if (renderCache.has(id)) return renderCache.get(id)!;
@@ -68,6 +89,13 @@ export async function renderSong(song: Song): Promise<RenderSongInfo | null> {
 	return info;
 }
 
+/**
+ * Validates if the provided **Song** exists. Returns a `boolean` depending on if the check was successful or not. Either response is temporarily cached.
+ * @example ```ts
+ * await renderSong({ service: "soundcloud", type: "user", id: "914653456" });
+ * // true
+ * ```
+ */
 export async function validateSong(song: Song): Promise<boolean> {
 	const id = sid(song);
 	if (validateCache.has(id)) return validateCache.get(id)!;
@@ -80,6 +108,7 @@ export async function validateSong(song: Song): Promise<boolean> {
 	return valid;
 }
 
+/** Clears the cache for all handler functions */
 export function clearCache() {
 	parseCache.clear();
 	linkCache.clear();

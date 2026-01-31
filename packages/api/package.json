@@ -15,6 +15,10 @@
 		"./structs": {
 			"types": "./dist/structs.d.ts",
 			"default": "./dist/structs.js"
+		},
+		"./util": {
+			"types": "./dist/util.d.ts",
+			"default": "./dist/util.js"
 		}
 	},
 	"publishConfig": {
@@ -33,9 +37,6 @@
 	"bugs": {
 		"url": "https://github.com/nexpid-labs/SongSpotlight/issues"
 	},
-	"dependencies": {
-		"zod": "^4.1.5"
-	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"rolldown": "^1.0.0-beta.34",
@@ -43,5 +44,8 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5"
+	},
+	"optionalDependencies": {
+		"zod": "^4.3.6"
 	}
 }

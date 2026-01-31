@@ -21,6 +21,19 @@ export function clean(link: string) {
 	return url.toString().replace(/\/?$/, "");
 }
 
+let makeRequest = fetch;
+/**
+ * Lets you to set a custom `fetch()` function. Useful for passing requests through Electron's [net.fetch](https://www.electronjs.org/docs/latest/api/net#netfetchinput-init) for example.
+ * @example ```ts
+ * import { net } from "electron";
+ *
+ * setFetchHandler(net.fetch as unknown as typeof fetch);
+ * ```
+ */
+export function setFetchHandler(fetcher: typeof fetch) {
+	makeRequest = fetcher;
+}
+
 export async function request(options: RequestOptions) {
 	if (options.body) {
 		const body = JSON.stringify(options.body);
@@ -34,14 +47,14 @@ export async function request(options: RequestOptions) {
 	const url = new URL(options.url);
 	for (const [key, value] of Object.entries(options.query ?? {})) url.searchParams.set(key, value);
 
-	const res = await fetch(url, {
+	const res = await makeRequest(url, {
 		method: options.method,
 		redirect: "follow",
 		headers: {
 			"accept": "*/*",
-			"user-agent": `song-spotlight/v${version}`,
+			"user-agent": `SongSpotlight/${version}`,
 			"cache-control": "public, max-age=3600",
-			...options.headers,
+			...(options.headers ?? {}),
 		},
 		// @ts-expect-error Untyped cloudflare workers cache type
 		cf: {
