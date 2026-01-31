@@ -20,7 +20,7 @@ npm install @song-spotlight/api
 
 The `@song-spotlight/api/structs` import gives you API types and Zod structures for **Song** and **UserData**.
 
-Note that up until version **1.2.1**, this package automatically came with `zod` installed. Since `zod` is a very big library, it's now an optional dependency and must be installed manually in your project's cwd:
+Note that before version **1.3.0**, this package automatically came with `zod` installed. Since `zod` is a very big library, it's now an optional dependency and must be installed manually in your project's cwd:
 
 ```
 bun install zod
