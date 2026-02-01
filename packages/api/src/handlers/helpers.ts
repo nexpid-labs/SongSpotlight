@@ -1,5 +1,6 @@
-import type { MaybePromise } from "bun";
 import type { Song } from "structs/types";
+
+type MaybePromise<T> = Promise<T> | T;
 
 export interface SongParser {
 	name: string;
