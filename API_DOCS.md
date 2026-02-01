@@ -10,7 +10,7 @@ Certain routes require authentication in the form of a **JWT token** in the `Aut
 
 ### Error handling
 
-Errors are sent as plaintext in a human readable format. Any response code in the range of **>=400 and `<=500** is an error and should be treated as such.
+Errors are sent as plaintext in a human readable format. Any response code in the range of **>=400 and <=500** is an error and should be treated as such.
 
 ### Ratelimits
 
@@ -18,11 +18,11 @@ A ratelimit of **max 20 requests/10s per user** is enforced on any route which r
 
 ### Data format
 
-The format of the data Song Spotlight saves. Can be viewed [here](./src/lib/db/index.ts). In production, the maximum amount of entries (songs) allowed is **6**. During development, this limit is removed for easier testing.
+The format of the data Song Spotlight saves. Can be viewed [here](./src/lib/db/index.ts). In production, the maximum amount of entries (songs) allowed is **6**. During development, this limit is removed (set to **1000**) for easier testing.
 
 ### Invalid song format
 
-Format of `[status: number, song: Song][]`, where `status` indicates the **HTTP status code** of the corresponding song. Meaning a `status` of **`200`** `OK` means the song is valid, while any other status code signals that the song is invalid. You can view the code [here](./src/api/data.ts)
+Format of `{ song: Song, status: boolean }[]`, where `status` indicates whether the corresponding song is valid or not.
 
 ## Routes
 
@@ -42,13 +42,14 @@ Format of `[status: number, song: Song][]`, where `status` indicates the **HTTP 
       - Returns **`200`** `OK` with [the saved songs](#data-format) (includes a `Last-Modified` header) on success
       - Returns **`500`** `INTERNAL SERVER ERROR` on an unknown server error
     - 🟢 **`GET`** `/api/data/:id` [🔒](#authentication)
-      - Requires an `id` path parameter in the form of a Discord user id [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
+      - Requires an `id` path parameter in the form of a Discord user ID [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
       - Returns **`200`** `OK` with [the user's saved songs](#data-format) (includes a `Last-Modified` header) on success
       - Returns **`500`** `INTERNAL SERVER ERROR` on an unknown server error
     - 🟠 **`PUT`** `/api/data/:id?` [🔒](#authentication)
-      - Allows an optional `id` path parameter in the form of a Discord user id [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
-        - If the provided `id` doesn't match the user's id, requires user to be `env.ADMIN_USER_ID`
-        - If user is indeed `env.ADMIN_USER_ID`, saves the body to `id` instead of the user's id
+      - Allows an optional `id` path parameter in the form of a Discord user ID [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
+        - Unless the authenticated user is `env.ADMIN_USER_ID`, the provided `id` must be their own
+        - If the user is indeed `env.ADMIN_USER_ID`, the body is saved to the provided `id` instead of the user's ID
+          - The `Last-Modified` header is set to `1970-01-01T00:00:00.000Z` to indicate third party alteration
       - Requires an `application/json` body in the format of [saved songs](#data-format)
       - Returns **`200`** `OK` with `true` on success
       - Returns **`400`** `BAD REQUEST` with helpful zod error messages on invalid body (`string`) or [invalid songs](#invalid-song-format) (`json`)
