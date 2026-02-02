@@ -86,7 +86,8 @@ export const spotify: SongService = {
 			sublabel: data.subtitle ?? data.artists?.map(x => x.name).join(", "),
 			explicit: Boolean(data.isExplicit),
 		};
-		const thumbnailUrl = data.visualIdentity.image.sort((a, b) => a.maxWidth - b.maxWidth)[0]?.url;
+		const thumbnailUrl = data.visualIdentity.image.sort((a, b) => a.maxWidth - b.maxWidth)[0]
+			?.url.replace(/:\/\/.*?\.spotifycdn\.com\/image/, "://i.scdn.co/image");
 
 		if (type === "track") {
 			const link = fromUri(data.uri)!;
