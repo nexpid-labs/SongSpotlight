@@ -33,6 +33,10 @@ interface APIData {
 
 const geo = "us", defaultName = "songspotlight";
 
+function applemusicLink(type: string, id: string) {
+	return `https://music.apple.com/${geo}/${type}/${defaultName}/${id}`;
+}
+
 const applemusicToken = makeCache("applemusicToken", async (html?: string) => {
 	html ??= (await request({
 		url: `https://music.apple.com/${geo}/new`,
@@ -51,6 +55,7 @@ const applemusicToken = makeCache("applemusicToken", async (html?: string) => {
 
 export const applemusic: SongService = {
 	name: "applemusic",
+	label: "Apple Music",
 	hosts: [
 		"music.apple.com",
 		"geo.music.apple.com",
@@ -61,7 +66,7 @@ export const applemusic: SongService = {
 		if (!country || !type || !this.types.includes(type) || !name || !id || fourth) return null;
 
 		const res = await request({
-			url: this.rebuild(type, id) as string,
+			url: applemusicLink(type, id),
 		});
 		if (res.status !== 200) return null;
 
@@ -78,7 +83,11 @@ export const applemusic: SongService = {
 		if (!token) return null;
 
 		const res = await request({
-			url: `https://amp-api.music.apple.com/v1/catalog/${geo}/${type}s/${id}?include=songs`,
+			url: `https://amp-api.music.apple.com/v1/catalog/${geo}/${type}s`,
+			query: {
+				include: "songs",
+				ids: id,
+			},
 			headers: {
 				authorization: `Bearer ${token}`,
 				origin: "https://music.apple.com",
@@ -90,7 +99,8 @@ export const applemusic: SongService = {
 
 		const base: RenderInfoBase = {
 			label: attributes.name,
-			sublabel: attributes.artistName ?? "Top Songs",
+			sublabel: attributes.artistName ?? "Top songs",
+			link: attributes.url,
 			explicit: attributes.contentRating === "explicit",
 		};
 		const thumbnailUrl = attributes.artwork?.url?.replace(/{[wh]}/g, "128");
@@ -98,8 +108,8 @@ export const applemusic: SongService = {
 		if (type === "song") {
 			const duration = attributes.durationInMillis, previewUrl = attributes.previews?.[0]?.url;
 			return {
-				...base,
 				form: "single",
+				...base,
 				thumbnailUrl,
 				single: {
 					audio: previewUrl && duration
@@ -108,41 +118,40 @@ export const applemusic: SongService = {
 							duration,
 						}
 						: undefined,
-					link: attributes.url,
 				},
 			};
+		} else {
+			return {
+				form: "list",
+				...base,
+				thumbnailUrl,
+				list: (relationships.tracks?.data ?? relationships.songs?.data ?? []).slice(
+					0,
+					PLAYLIST_LIMIT,
+				).map(
+					({ attributes }) => {
+						const duration = attributes.durationInMillis,
+							previewUrl = attributes.previews?.[0]?.url;
+						return {
+							label: attributes.name,
+							sublabel: attributes.artistName!,
+							link: attributes.url,
+							explicit: attributes.contentRating === "explicit",
+							audio: previewUrl && duration
+								? {
+									previewUrl,
+									duration,
+								}
+								: undefined,
+						};
+					},
+				),
+			};
 		}
-
-		const songs = (relationships.songs ?? relationships.tracks)?.data;
-		if (!songs) return null;
-
-		return {
-			...base,
-			form: "list",
-			thumbnailUrl,
-			list: songs.slice(0, PLAYLIST_LIMIT).map(({ attributes: song }) => {
-				const duration = song.durationInMillis, previewUrl = song.previews?.[0]?.url;
-				return {
-					label: song.name,
-					sublabel: song.artistName!,
-					explicit: song.contentRating === "explicit",
-					audio: previewUrl && duration
-						? {
-							previewUrl,
-							duration,
-						}
-						: undefined,
-					link: song.url,
-				};
-			}),
-		};
 	},
 	async validate(type, id) {
 		return (await request({
-			url: this.rebuild(type, id) as string,
+			url: applemusicLink(type, id),
 		})).status === 200;
-	},
-	rebuild(type, id) {
-		return `https://music.apple.com/${geo}/${type}/${defaultName}/${id}`;
 	},
 };

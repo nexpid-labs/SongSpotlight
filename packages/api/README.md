@@ -45,19 +45,15 @@ From `@song-spotlight/api/handlers`
 
 ### `parseLink(link: string): Promise<Song?>`
 
-Tries to parse the provided **link**. Returns a **Song** if successful, or `null` if nothing was found. Either response is temporarily cached.
-
-### `rebuildLink(song: Song): Promise<string?>`
-
-Tries to recreate the link to the provided **Song**. Returns `string` if successful, or `null` if nothing was found. Either response is temporarily cached.
+Tries to parse the provided **link**. Returns a **Song** if successful, or `null` if nothing was found. Either response is cached until `clearCache` is called.
 
 ### `renderSong(song: Song): Promise<RenderSongInfo?>`
 
-Tries to render the provided **Song**. Returns `RenderSongInfo` if successful, or `null` if nothing was found. Either response is temporarily cached.
+Tries to render the provided **Song**. Returns `RenderSongInfo` if successful, or `null` if nothing was found. Either response is cached until `clearCache` is called.
 
 ### `validateSong(song: Song): Promise<boolean>`
 
-Validates if the provided **Song** exists. Returns a `boolean` depending on if the check was successful or not. Either response is temporarily cached.
+Validates if the provided **Song** exists. Returns a `boolean` depending on if the check was successful or not. Either response is cached until `clearCache` is called.
 
 ### `clearCache()`
 
@@ -91,4 +87,31 @@ import { setFetchHandler } from "@song-spotlight/api/util";
 import { net } from "electron";
 
 setFetchHandler(net.fetch as unknown as typeof fetch);
+```
+
+### `isListLayout(song: Song, render?: RenderSongInfo): boolean`
+
+Returns whether the specified **Song** should have a tall layout (for **playlists**, **albums** and **artists**) or a short layout (for **tracks**).
+
+```ts
+isListLayout({ service: "soundcloud", type: "user", id: "914653456" });
+// true
+```
+
+### `getServiceLabel(service: string): string?`
+
+Loops through all **services** and returns the corresponding **service**'s label.
+
+```ts
+getServiceLabel("applemusic");
+// "Apple Music"
+```
+
+### `sid(song: Song): string`
+
+Helper function which stringifies a **Song**, useful for caching or for using as keys.
+
+```ts
+sid({ service: "soundcloud", type: "user", id: "914653456" });
+// "soundcloud:user:914653456"
 ```

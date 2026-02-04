@@ -19,6 +19,7 @@ interface Next {
 
 export const songdotlink: SongParser = {
 	name: "song.link",
+	label: "song.link",
 	hosts: [
 		"song.link",
 		"album.link",

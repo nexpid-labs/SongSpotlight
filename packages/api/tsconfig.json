@@ -28,6 +28,7 @@
 		"paths": {
 			"handlers/*": ["./handlers/*"],
 			"structs/*": ["./structs/*"],
+			"$util": ["./util.ts"],
 			"@": ["../package.json"]
 		}
 	},

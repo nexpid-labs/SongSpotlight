@@ -4,6 +4,7 @@ type MaybePromise<T> = Promise<T> | T;
 
 export interface SongParser {
 	name: string;
+	label: string;
 	hosts: string[];
 	parse(link: string, host: string, path: string[]): MaybePromise<Song | null>;
 }
@@ -12,21 +13,20 @@ export interface SongService extends SongParser {
 	types: string[];
 	render(type: string, id: string): MaybePromise<RenderSongInfo | null>;
 	validate(type: string, id: string): MaybePromise<boolean>;
-	rebuild(type: string, id: string): MaybePromise<string | null>;
 }
 
 export interface RenderInfoBase {
 	label: string;
 	sublabel: string;
 	explicit: boolean;
+	link: string;
 }
 
 export interface RenderInfoEntry {
 	audio?: {
 		duration: number;
 		previewUrl: string;
-	} | undefined;
-	link: string;
+	};
 }
 export type RenderInfoEntryBased = RenderInfoEntry & RenderInfoBase;
 

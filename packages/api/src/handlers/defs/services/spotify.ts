@@ -1,5 +1,5 @@
 import { parseNextData, PLAYLIST_LIMIT, request } from "handlers/common";
-import { type RenderInfoBase, type RenderInfoEntryBased, type SongService } from "handlers/helpers";
+import { type RenderInfoBase, type SongService } from "handlers/helpers";
 
 interface Next {
 	props: {
@@ -61,6 +61,7 @@ function fromUri(uri: string) {
 
 export const spotify: SongService = {
 	name: "spotify",
+	label: "Spotify",
 	hosts: [
 		"open.spotify.com",
 	],
@@ -84,17 +85,16 @@ export const spotify: SongService = {
 		const base: RenderInfoBase = {
 			label: data.title,
 			sublabel: data.subtitle ?? data.artists?.map(x => x.name).join(", "),
+			link: fromUri(data.uri)!,
 			explicit: Boolean(data.isExplicit),
 		};
 		const thumbnailUrl = data.visualIdentity.image.sort((a, b) => a.maxWidth - b.maxWidth)[0]
 			?.url.replace(/:\/\/.*?\.spotifycdn\.com\/image/, "://i.scdn.co/image");
 
 		if (type === "track") {
-			const link = fromUri(data.uri)!;
-
 			return {
-				...base,
 				form: "single",
+				...base,
 				thumbnailUrl,
 				single: {
 					audio: (data.audioPreview && data.duration)
@@ -103,18 +103,17 @@ export const spotify: SongService = {
 							previewUrl: data.audioPreview.url,
 						}
 						: undefined,
-					link,
 				},
 			};
 		} else {
-			const list: RenderInfoEntryBased[] = [];
-			for (const track of (data.trackList ?? [])) {
-				if (list.length >= PLAYLIST_LIMIT) continue;
-				const link = fromUri(track.uri)!;
-
-				list.push({
+			return {
+				form: "list",
+				...base,
+				thumbnailUrl,
+				list: (data.trackList ?? []).slice(0, PLAYLIST_LIMIT).map((track) => ({
 					label: track.title,
 					sublabel: track.subtitle ?? track.artists?.map(x => x.name).join(", "),
+					link: fromUri(track.uri)!,
 					explicit: Boolean(track.isExplicit),
 					audio: (track.audioPreview && track.duration)
 						? {
@@ -122,22 +121,11 @@ export const spotify: SongService = {
 							previewUrl: track.audioPreview.url,
 						}
 						: undefined,
-					link,
-				});
-			}
-
-			return {
-				...base,
-				form: "list",
-				thumbnailUrl,
-				list,
+				})),
 			};
 		}
 	},
 	async validate(type, id) {
 		return !(await parseEmbed(type, id))?.props?.pageProps?.title;
-	},
-	rebuild(type, id) {
-		return `https://open.spotify.com/${type}/${id}`;
 	},
 };

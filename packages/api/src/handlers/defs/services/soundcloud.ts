@@ -1,6 +1,6 @@
 import { PLAYLIST_LIMIT, request } from "handlers/common";
 import { parseLink } from "handlers/finders";
-import { type RenderInfoBase, type RenderInfoEntryBased, type SongService } from "handlers/helpers";
+import { type RenderInfoBase, type SongService } from "handlers/helpers";
 
 interface oEmbedData {
 	html: string;
@@ -47,13 +47,13 @@ function parseWidget(type: string, id: string, tracks: true): Promise<TracksWidg
 function parseWidget(type: string, id: string, tracks: false): Promise<WidgetData | undefined>;
 async function parseWidget(type: string, id: string, tracks: boolean) {
 	return (await request({
-		url: `https://api-widget.soundcloud.com/${type}s/${id}${tracks ? "/tracks?limit=20" : ""}`,
+		url: `https://api-widget.soundcloud.com/${type}s/${id}${tracks ? "/tracks" : ""}`,
 		query: {
+			format: "json",
 			client_id,
 			// app version isnt static but lets hope soundcloud doesnt mind :) :) :)
-			app_version: "1764154491",
-			format: "json",
-			representation: "full",
+			app_version: "1768986291",
+			limit: "20",
 		},
 	})).json;
 }
@@ -84,6 +84,7 @@ async function parsePreview(transcodings: Transcoding[]) {
 
 export const soundcloud: SongService = {
 	name: "soundcloud",
+	label: "Soundcloud",
 	hosts: [
 		"soundcloud.com",
 		"m.soundcloud.com",
@@ -139,63 +140,48 @@ export const soundcloud: SongService = {
 		const base: RenderInfoBase = {
 			label: data.title ?? data.username,
 			sublabel: data.user?.username ?? "Top tracks",
+			link: data.permalink_url,
 			explicit: Boolean(data.publisher_metadata?.explicit),
 		};
 		const thumbnailUrl = data.artwork_url ?? data.avatar_url;
 
 		if (type === "track") {
-			const audio = await parsePreview(data.media?.transcodings ?? []);
+			const audio = await parsePreview(data.media?.transcodings ?? []).catch(() => undefined);
 
 			return {
-				...base,
 				form: "single",
+				...base,
 				thumbnailUrl,
 				single: {
 					audio,
-					link: data.permalink_url,
 				},
 			};
-		}
-
-		let tracks: WidgetData[] = [];
-		if (type === "user") {
-			const got = await parseWidget(type, id, true);
-			if (!got?.collection) return null;
-
-			tracks = got.collection;
 		} else {
-			if (!data.tracks) return null;
+			let tracks: WidgetData[] = [];
+			if (type === "user") {
+				const got = await parseWidget(type, id, true).catch(() => undefined);
+				if (got?.collection) tracks = got.collection;
+			} else {
+				if (data.tracks) tracks = data.tracks;
+			}
 
-			tracks = data.tracks;
+			return {
+				form: "list",
+				...base,
+				thumbnailUrl,
+				list: await Promise.all(
+					tracks.filter(x => x.title).slice(0, PLAYLIST_LIMIT).map(async (track) => ({
+						label: track.title,
+						sublabel: track.user?.username ?? "unknown",
+						link: track.permalink_url,
+						explicit: Boolean(track.publisher_metadata!.explicit),
+						audio: await parsePreview(track.media?.transcodings ?? []).catch(() => undefined),
+					})),
+				),
+			};
 		}
-
-		const list: RenderInfoEntryBased[] = [];
-		for (const track of tracks) {
-			// unavailable songs
-			if (!track.title || list.length >= PLAYLIST_LIMIT) continue;
-
-			const audio = await parsePreview(track.media?.transcodings ?? []);
-
-			list.push({
-				label: track.title,
-				sublabel: track.user?.username ?? "IDKK",
-				explicit: Boolean(track.publisher_metadata!.explicit),
-				audio,
-				link: track.permalink_url,
-			});
-		}
-
-		return {
-			...base,
-			form: "list",
-			thumbnailUrl,
-			list,
-		};
 	},
 	async validate(type, id) {
 		return (await parseWidget(type, id, false))?.id !== undefined;
-	},
-	async rebuild(type, id) {
-		return (await parseWidget(type, id, false))?.permalink_url ?? null;
 	},
 };

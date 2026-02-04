@@ -1,5 +1,7 @@
 import type { Song } from "structs/types";
 
+import { sid } from "$util";
+
 import { clean } from "./common";
 import type { RenderSongInfo, SongParser, SongService } from "./helpers";
 
@@ -8,10 +10,6 @@ export const $ = {
 	services: [] as SongService[],
 	parsers: [] as SongParser[],
 };
-
-function sid(song: Song) {
-	return [song.service, song.type, song.id].join(":");
-}
 
 // parseLink -> parseCache, validateCache
 // rebuildLink -> linkCache, validateCache
@@ -45,27 +43,6 @@ export async function parseLink(link: string): Promise<Song | null> {
 	parseCache.set(cleaned, song);
 	if (song) validateCache.set(sid(song), true);
 	return song;
-}
-
-const linkCache = new Map<string, string | null>();
-/**
- * Tries to recreate the link to the provided **Song**. Returns `string` if successful, or `null` if nothing was found. Either response is temporarily cached.
- * @example ```ts
- * await parseLink({ service: "soundcloud", type: "user", id: "914653456" });
- * // https://soundcloud.com/c0ncernn
- * ```
- */
-export async function rebuildLink(song: Song): Promise<string | null> {
-	const id = sid(song);
-	if (linkCache.has(id)) return linkCache.get(id)!;
-
-	let link = null;
-	const service = $.services.find(x => x.name === song.service);
-	if (service?.types.includes(song.type)) link = await service.rebuild(song.type, song.id);
-
-	linkCache.set(id, link);
-	if (link) validateCache.set(id, true);
-	return link;
 }
 
 const renderCache = new Map<string, RenderSongInfo | null>();
@@ -111,7 +88,6 @@ export async function validateSong(song: Song): Promise<boolean> {
 /** Clears the cache for all handler functions */
 export function clearCache() {
 	parseCache.clear();
-	linkCache.clear();
 	renderCache.clear();
 	validateCache.clear();
 }
