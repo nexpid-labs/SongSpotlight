@@ -14,14 +14,14 @@ const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
 		name: "songspotlight",
 		description: "View someone's Song Spotlight",
 		options: [{
-			type: ApplicationCommandOptionType.Boolean,
-			name: "raw",
-			description: "View raw JSON data",
-			required: false,
-		}, {
 			type: ApplicationCommandOptionType.User,
 			name: "user",
 			description: "Who to check",
+			required: false,
+		}, {
+			type: ApplicationCommandOptionType.Boolean,
+			name: "raw",
+			description: "View raw JSON data",
 			required: false,
 		}, {
 			type: ApplicationCommandOptionType.Boolean,

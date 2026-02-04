@@ -63,11 +63,14 @@ export async function viewSongs(
 			} have any Song Spotlight songs added!`,
 		});
 	} else {
+		const adminAbuse = at === new Date(0).toISOString();
 		components.push({
 			type: ComponentType.TextDisplay,
 			content: lines([
 				`# ${user.name}'s Song Spotlight`,
-				`-# Last updated <t:${Math.floor(new Date(at).getTime() / 1000)}:F>`,
+				adminAbuse
+					? `-# Last updated by a moderator`
+					: `-# Last updated <t:${Math.floor(new Date(at).getTime() / 1000)}:F>`,
 			]),
 		});
 
@@ -114,7 +117,7 @@ export async function viewSongs(
 			const i = data.length - renders.length;
 			components.push({
 				type: ComponentType.TextDisplay,
-				content: `-# ${i} song${i !== 1 ? "s" : ""} failed to load and ${
+				content: `-# ⚠️ ${i} song${i !== 1 ? "s" : ""} failed to load and ${
 					i === 1 ? "isn't" : "aren't"
 				} being displayed`,
 			});
