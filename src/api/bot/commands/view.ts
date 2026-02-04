@@ -36,14 +36,14 @@ export async function viewSongs(
 ) {
 	await deferReply(interaction, quietFlags(quiet));
 
-	const who = author.id === user.id ? "your" : `**${user.name}**`;
-
 	let userData: ApiUserData;
 	try {
 		userData = await getUserData(user.id);
 	} catch {
 		return await editReply(interaction, {
-			content: `❌ Failed to fetch ${who} Song Spotlight! Please try again later.`,
+			content: `❌ Failed to fetch ${
+				author.id === user.id ? "your" : `**${user.name}**'s`
+			} Song Spotlight! Please try again later.`,
 		});
 	}
 
@@ -51,11 +51,6 @@ export async function viewSongs(
 	const renders = await Promise.allSettled(
 		data.map((song) => renderSong(song).then(render => render ? { song, render } : null)),
 	).then(renders => renders.map(x => x.status === "fulfilled" && x.value).filter(x => !!x));
-	if (renders.length !== data.length) {
-		return await editReply(interaction, {
-			content: `❌ Failed to render ${who} Song Spotlight! Please try again later.`,
-		});
-	}
 
 	const components: APIMessageTopLevelComponent[] = [];
 	if (!data[0]) {
@@ -112,6 +107,16 @@ export async function viewSongs(
 						} as APITextDisplayComponent
 						: undefined,
 				].filter(x => !!x),
+			});
+		}
+
+		if (renders.length !== data.length) {
+			const i = data.length - renders.length;
+			components.push({
+				type: ComponentType.TextDisplay,
+				content: `-# ${i} song${i !== 1 ? "s" : ""} failed to load and ${
+					i === 1 ? "isn't" : "aren't"
+				} being displayed`,
 			});
 		}
 	}
