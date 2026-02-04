@@ -93,6 +93,8 @@ $ bunx wrangler secret bulk .dev.vars
 
 To enable the Discord command, start with enabling **Public Bot** in the **Bot** tab, along with **User Install** and **Guild Install** in the **Installation** tab.
 
+You can also optionally set a [Last.fm API key](https://www.last.fm/api#getting-started).
+
 Then, set **Interactions Endpoint URL** in the **General Information** tab to `https://your-worker.workers.dev/api/bot/interaction`. Copy your application's **Public Key** and put it in `.dev.vars`. Then run:
 
 ```bash

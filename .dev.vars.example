@@ -8,6 +8,7 @@ CLIENT_SECRET=""
 # optional, only used for extra bot features
 CLIENT_TOKEN=""
 PUBLIC_KEY=""
+LASTFM_API_KEY=""
 
 # optional, only used for debugging
 ADMIN_USER_ID=""

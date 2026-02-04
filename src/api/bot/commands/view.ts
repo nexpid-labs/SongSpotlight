@@ -1,4 +1,5 @@
-import { rebuildLink, renderSong } from "@song-spotlight/api/handlers";
+import { renderSong } from "@song-spotlight/api/handlers";
+import { callLastFm, isLastFmSupported } from "api/bot/lastfm";
 import { deferReply, editReply } from "api/bot/rest";
 import { FmtUser, lines, quietFlags, textOrSection } from "api/bot/utils";
 import {
@@ -76,10 +77,28 @@ export async function viewSongs(
 
 		for (const { song, render } of renders) {
 			const isUser = ["user", "artist"].includes(song.type);
-			const extra = render.form === "single" && render.single.audio?.duration
-				? `\`${formatDurationMs(render.single.audio.duration)}\``
-				: render.form === "list"
-					&& `${render.list.length} track${render.list.length !== 1 ? "s" : ""}`;
+			const isAlbum = song.type === "album"
+				|| (song.service === "soundcloud" && song.type === "playlist");
+			const isTrack = ["song", "track"].includes(song.type);
+
+			let scrobbles = 0;
+			if (isLastFmSupported()) {
+				if (isUser) {
+					scrobbles = await callLastFm("artist.getInfo", {
+						artist: render.label,
+					}).then(x => x.ok ? Number(x.data.artist.stats.playcount) : 0).catch(() => 0);
+				} else if (isAlbum) {
+					scrobbles = await callLastFm("album.getInfo", {
+						album: render.label,
+						artist: render.sublabel,
+					}).then(x => x.ok ? Number(x.data.album.playcount) : 0).catch(() => 0);
+				} else if (isTrack) {
+					scrobbles = await callLastFm("track.getInfo", {
+						track: render.label,
+						artist: render.sublabel,
+					}).then(x => x.ok ? Number(x.data.track.playcount) : 0).catch(() => 0);
+				}
+			}
 
 			components.push({
 				type: ComponentType.Container,
@@ -88,9 +107,7 @@ export async function viewSongs(
 						{
 							type: ComponentType.TextDisplay,
 							content: lines([
-								`### [${clamp(render.label)}](${await rebuildLink(song)}) ${
-									serviceEmojis[song.service]
-								}`,
+								`### [${clamp(render.label)}](${render.link}) ${serviceEmojis[song.service]}`,
 								isUser ? clamp(render.sublabel) : `by **${clamp(render.sublabel)}**`,
 							]),
 						},
@@ -103,12 +120,19 @@ export async function viewSongs(
 							}
 							: undefined,
 					),
-					extra
-						? {
-							type: ComponentType.TextDisplay,
-							content: extra,
-						} as APITextDisplayComponent
-						: undefined,
+					{
+						type: ComponentType.TextDisplay,
+						content: [
+							render.form === "single" && render.single.audio?.duration
+							&& `\`${formatDurationMs(render.single.audio.duration)}\``,
+							render.form === "list"
+							&& `**${render.list.length.toLocaleString("en-US")}** track${
+								render.list.length !== 1 ? "s" : ""
+							}`,
+							scrobbles
+							&& `**${scrobbles.toLocaleString("en-US")}** scrobble${scrobbles !== 1 ? "s" : ""}`,
+						].filter(x => !!x).join(" ・ "),
+					} as APITextDisplayComponent,
 				].filter(x => !!x),
 			});
 		}
@@ -117,9 +141,9 @@ export async function viewSongs(
 			const i = data.length - renders.length;
 			components.push({
 				type: ComponentType.TextDisplay,
-				content: `-# ⚠️ ${i} song${i !== 1 ? "s" : ""} failed to load and ${
-					i === 1 ? "isn't" : "aren't"
-				} being displayed`,
+				content: `-# ⚠️ **${i.toLocaleString("en-US")}** song${
+					i !== 1 ? "s" : ""
+				} failed to load and ${i === 1 ? "isn't" : "aren't"} being displayed`,
 			});
 		}
 	}
