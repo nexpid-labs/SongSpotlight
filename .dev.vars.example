@@ -1,12 +1,13 @@
-# randomly generated secret -> bun run test/src/jwt.ts
+# randomly generated secret -> openssl rand -hex 32
 JWT_SECRET=""
 
 # discord client oauth2 env variables
 CLIENT_ID=""
 CLIENT_SECRET=""
 
-# optional, only used for Silly service
+# optional, only used for extra bot features
 CLIENT_TOKEN=""
+PUBLIC_KEY=""
 
 # optional, only used for debugging
 ADMIN_USER_ID=""

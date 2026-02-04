@@ -45,10 +45,12 @@ $ bun install --omit=optional
 You need:
 
 - [Cloudflare D1 database](https://developers.cloudflare.com/d1/)[^1]
-- [Discord application](https://discord.com/developers/applications)[^2]
-- Randomly generated JWT secret[^3]
+- [Discord application](https://discord.com/developers/applications?new_application=true)
+- Randomly generated JWT secret[^2]
 
-You will need to add an **OAuth2 redirect URI** to your Discord appliaction in the format of `https://your-worker.workers.dev/api/auth/authorize`. After that, create a `.dev.vars` file based on `.dev.vars.example` with all of your secrets filled in, then run:
+In your Discord application's page, go to the **OAuth2** tab and create a new **OAuth2 Redirect** in the format of `https://your-worker.workers.dev/api/auth/authorize` and `http://localhost:8787/api/auth/authorize`
+
+After that, create a `.dev.vars` file based on `.dev.vars.example` with all of your secrets filled in, then run:
 
 ```bash
 # publish secrets
@@ -68,25 +70,44 @@ $ bun run dry-deploy
 $ bun run deploy
 ```
 
-## Silly service
+### Discord bot
 
-A cron schedule that runs every day at **2:00 AM UTC** which gives the bot a randomized avatar, banner and even [FPTE](https://vencord.dev/plugins/FakeProfileThemes) color theme. This is disabled by default.
+Along with the Discord application for OAuth2, you can also create a Discord bot. This allows you to:
 
-To enable this, you have to create a Discord Bot user for your application. After creating it, save its token in `.dev.vars`:
+- Enable the `/songspotlight` Discord command — users will need to add your app as an userapp (the `applications.commands` scope) or add it to their server to use the command
+- Enable the Silly service — a cron schedule that runs every day at **2:00 AM UTC** which generates a randomized color palette for its avatar, banner and even [FPTE](https://vencord.dev/plugins/FakeProfileThemes)
+
+To create a bot user, go to the **Bot** tab in your Discord application's page, create it, and save its token in `.dev.vars`:
 
 ```
-# optional and only used for Silly cron schedule
+# optional, only used for extra bot features
 CLIENT_TOKEN="Bot [your token here]"
 ```
 
 Then run:
 
 ```bash
-# install with optional dependencies
-$ bun install
-
 # publish secrets
 $ bunx wrangler secret bulk .dev.vars
+```
+
+To enable the Discord command, start with enabling **Public Bot** in the **Bot** tab, along with **User Install** and **Guild Install** in the **Installation** tab.
+
+Then, set **Interactions Endpoint URL** in the **General Information** tab to `https://your-worker.workers.dev/api/bot/interaction`. Copy your application's **Public Key** and put it in `.dev.vars`. Then run:
+
+```bash
+# publish secrets
+$ bunx wrangler secret bulk .dev.vars
+
+# create global commands
+$ bun run commands
+```
+
+To enable the Silly service, run:
+
+```bash
+# install @resvg/resvg-wasm
+$ bun install
 ```
 
 ## Testing
@@ -99,6 +120,4 @@ MIT
 
 [^1]: setup guide is [here](./HOW_TO_D1.md)
 
-[^2]: creating a Discord bot (seperate from an application) is only required if you need a bot token (for exaple for the [silly service](#silly-service))
-
-[^3]: run `bun run test/src/jwt.ts`
+[^2]: run `openssl rand -hex 32`
