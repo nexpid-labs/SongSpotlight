@@ -4,6 +4,7 @@ import { HttpStatus } from "lib/http-status";
 import { logger } from "lib/logger";
 
 import auth from "./auth";
+import bot from "./bot";
 import data from "./data";
 
 const api = new Hono();
@@ -42,5 +43,6 @@ api.get("/bench/:test", async function bench(c) {
 
 api.route("/auth", auth);
 api.route("/data", data);
+api.route("/bot", bot);
 
 export default api;
