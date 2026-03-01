@@ -137,7 +137,7 @@ bot.post("/interaction", async (c) => {
 
 				return showMessage(
 					c,
-					"To edit your Song Spotlight songs, use the [**Vencord plugin**](<https://vencord.dev/plugins/SongSpotlight> \"this doesn't exist yet\") or install the [**Revenge plugin**](<https://revenge.nexpid.xyz/song-spotlight>)! <:blobcatcozy:1468372941858410546>",
+					"To edit your Song Spotlight songs, use the Vencord/Equicord plugin (coming soon) or install the [**Revenge plugin**](<https://revenge.nexpid.xyz/song-spotlight>)! <:blobcatcozy:1468372941858410546>",
 				);
 			}
 
