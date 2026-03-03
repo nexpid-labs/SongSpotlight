@@ -17,6 +17,8 @@ interface Next {
 	};
 }
 
+const alphabeticRegex = /^[^-_][a-z0-9-_]+[^-_]$/i;
+
 export const songdotlink: SongParser = {
 	name: "song.link",
 	label: "song.link",
@@ -33,10 +35,8 @@ export const songdotlink: SongParser = {
 		const [first, second, third] = path;
 		if (!first || third) return null;
 
-		if (second && Number.isNaN(+second)) return null;
-		else if (
-			!second && (!first.match(/^[A-z0-9-_]+$/) || first.match(/^[-_]/) || first.match(/[-_]$/))
-		) return null;
+		if (second && !alphabeticRegex.test(second)) return null;
+		else if (!second && !alphabeticRegex.test(first)) return null;
 
 		const html = (await request({
 			url: link,
