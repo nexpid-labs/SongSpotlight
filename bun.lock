@@ -6,7 +6,7 @@
       "name": "song-spotlight",
       "dependencies": {
         "@hono-rate-limiter/cloudflare": "^0.2.2",
-        "@song-spotlight/api": "^2.0.0",
+        "@song-spotlight/api": "^2.0.1",
         "discord-api-types": "^0.38.38",
         "discord-interactions": "^4.4.0",
         "hono": "^4.11.7",
@@ -203,7 +203,7 @@
 
     "@sindresorhus/is": ["@sindresorhus/is@7.2.0", "", {}, "sha512-P1Cz1dWaFfR4IR+U13mqqiGsLFf1KbayybWwdd2vfctdV6hDpUkgCY0nKOLLTMSoRd/jJNjtbqzf13K8DCCXQw=="],
 
-    "@song-spotlight/api": ["@song-spotlight/api@2.0.0", "", { "optionalDependencies": { "zod": "^4.3.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-a3gyrSojd3BzwloxZHyDXA7HhjmCNQZOYATh7AZJyCXIqilBMwFPgQ2FVkUpzf6MzZhN9emeN6OGZOJb/rkECw=="],
+    "@song-spotlight/api": ["@song-spotlight/api@2.0.1", "", { "optionalDependencies": { "zod": "^4.3.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-nxBJch8cGp10NYeJSp3DCPS/LYmlpcs9VCHrHzgCHFRICTKWhlpiUZgrACP9TmQ8RQsE4B9e23BcQDaqWqPCGg=="],
 
     "@speed-highlight/core": ["@speed-highlight/core@1.2.14", "", {}, "sha512-G4ewlBNhUtlLvrJTb88d2mdy2KRijzs4UhnlrOSRT4bmjh/IqNElZa3zkrZ+TC47TwtlDWzVLFADljF1Ijp5hA=="],
 

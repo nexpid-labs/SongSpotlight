@@ -1,69 +1,69 @@
 {
-    "name": "song-spotlight",
-    "scripts": {
-        "dev": "wrangler dev",
-        "deploy": "wrangler deploy --minify --define IS_PRODUCTION:true",
-        "dry-deploy": "bun run deploy --dry-run --outdir=./bundled",
-        "runtime": "wrangler types",
-        "format": "dprint fmt",
-        "lint": "eslint --fix",
-        "typecheck": "bun run runtime && tsc --noEmit",
-        "commands": "bun run --env-file=.dev.vars src/commands.ts"
-    },
-    "dependencies": {
-        "@hono-rate-limiter/cloudflare": "^0.2.2",
-        "@song-spotlight/api": "^2.0.0",
-        "discord-api-types": "^0.38.38",
-        "discord-interactions": "^4.4.0",
-        "hono": "^4.11.7",
-        "jose": "^6.1.3",
-        "zod": "^4.3.6"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.39.2",
-        "@types/node": "^25.1.0",
-        "eslint": "^9.39.2",
-        "eslint-plugin-simple-import-sort": "^12.1.1",
-        "eslint-plugin-typescript-paths": "^0.0.33",
-        "eslint-plugin-unused-imports": "^4.3.0",
-        "globals": "^17.2.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.54.0",
-        "wrangler": "4.61.1"
-    },
-    "optionalDependencies": {
-        "@resvg/resvg-wasm": "^2.6.2"
-    },
-    "peerDependencies": {
-        "jiti": "^2.6.1"
-    },
-    "patchedDependencies": {
-        "wrangler@4.61.1": "patches/wrangler@4.61.1.patch"
-    },
-    "packageManager": "bun@1.3.8",
-    "cloudflare": {
-        "bindings": {
-            "JWT_SECRET": {
-                "description": "Randomly generated secret for JWT access tokens, use `openssl rand -hex 32` to generate"
-            },
-            "JWT_REFRESH_SECRET": {
-                "description": "Randomly generated secret for JWT refresh tokens, use `openssl rand -hex 32` to generate"
-            },
-            "CLIENT_ID": {
-                "description": "The Discord OAuth2 application ID"
-            },
-            "CLIENT_SECRET": {
-                "description": "The Discord OAuth2 application secret"
-            },
-            "REDIRECT_URI": {
-                "description": "The Discord OAuth2 application redirect URI"
-            },
-            "CLIENT_TOKEN": {
-                "description": "(Optional) A Discord bot token (prefixed with Bot token type), used for the Silly service"
-            },
-            "ADMIN_USER_ID": {
-                "description": "(Optional) Your Discord user id, used for testing"
-            }
-        }
-    }
+	"name": "song-spotlight",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify --define IS_PRODUCTION:true",
+		"dry-deploy": "bun run deploy --dry-run --outdir=./bundled",
+		"runtime": "wrangler types",
+		"format": "dprint fmt",
+		"lint": "eslint --fix",
+		"typecheck": "bun run runtime && tsc --noEmit",
+		"commands": "bun run --env-file=.dev.vars src/commands.ts"
+	},
+	"dependencies": {
+		"@hono-rate-limiter/cloudflare": "^0.2.2",
+		"@song-spotlight/api": "^2.0.1",
+		"discord-api-types": "^0.38.38",
+		"discord-interactions": "^4.4.0",
+		"hono": "^4.11.7",
+		"jose": "^6.1.3",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.39.2",
+		"@types/node": "^25.1.0",
+		"eslint": "^9.39.2",
+		"eslint-plugin-simple-import-sort": "^12.1.1",
+		"eslint-plugin-typescript-paths": "^0.0.33",
+		"eslint-plugin-unused-imports": "^4.3.0",
+		"globals": "^17.2.0",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.54.0",
+		"wrangler": "4.61.1"
+	},
+	"optionalDependencies": {
+		"@resvg/resvg-wasm": "^2.6.2"
+	},
+	"peerDependencies": {
+		"jiti": "^2.6.1"
+	},
+	"patchedDependencies": {
+		"wrangler@4.61.1": "patches/wrangler@4.61.1.patch"
+	},
+	"packageManager": "bun@1.3.8",
+	"cloudflare": {
+		"bindings": {
+			"JWT_SECRET": {
+				"description": "Randomly generated secret for JWT access tokens, use `openssl rand -hex 32` to generate"
+			},
+			"JWT_REFRESH_SECRET": {
+				"description": "Randomly generated secret for JWT refresh tokens, use `openssl rand -hex 32` to generate"
+			},
+			"CLIENT_ID": {
+				"description": "The Discord OAuth2 application ID"
+			},
+			"CLIENT_SECRET": {
+				"description": "The Discord OAuth2 application secret"
+			},
+			"REDIRECT_URI": {
+				"description": "The Discord OAuth2 application redirect URI"
+			},
+			"CLIENT_TOKEN": {
+				"description": "(Optional) A Discord bot token (prefixed with Bot token type), used for the Silly service"
+			},
+			"ADMIN_USER_ID": {
+				"description": "(Optional) Your Discord user id, used for testing"
+			}
+		}
+	}
 }
