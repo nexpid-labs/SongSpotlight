@@ -1,3 +1,7 @@
+# v2.0.1
+
+- Fixed issues with `song.link` parsing
+
 # v2.0.0
 
 - Removed `rebuildLink`
