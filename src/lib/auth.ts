@@ -1,9 +1,13 @@
 import { jwtVerify, SignJWT } from "jose";
+import { JWTExpired } from "jose/errors";
 
 export interface TokenPayload {
 	userId: string;
 	exp: number;
 }
+
+if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is missing or empty");
+if (!process.env.JWT_REFRESH_SECRET) throw new Error("JWT_REFRESH_SECRET is missing or empty");
 
 // used for breaking changes related to auth
 const issuer = "song-spotlight:1";
@@ -17,7 +21,12 @@ const refreshExpiry = "2y";
 
 type TokenType = "access" | "refresh";
 
-async function parseUser(token: string, tokenType: TokenType): Promise<TokenPayload | null> {
+interface ParsedToken {
+	user?: TokenPayload;
+	expired?: boolean;
+}
+
+async function parseUser(token: string, tokenType: TokenType): Promise<ParsedToken> {
 	const isRefresh = tokenType === "refresh";
 	try {
 		const verified = await jwtVerify<TokenPayload>(
@@ -29,19 +38,23 @@ async function parseUser(token: string, tokenType: TokenType): Promise<TokenPayl
 				issuer,
 			},
 		);
-		return verified.payload;
-	} catch {
-		return null;
+		return {
+			user: verified.payload,
+		};
+	} catch (error) {
+		return {
+			expired: error instanceof JWTExpired,
+		};
 	}
 }
 
 export async function getUser(token?: string, tokenType: TokenType = "access") {
-	const user = token && await parseUser(token, tokenType);
-	return user && user.exp > Date.now() / 1000 ? user : null;
+	const parsed = token && await parseUser(token, tokenType);
+	return (parsed && parsed.user) || null;
 }
 export async function isValid(token?: string, tokenType: TokenType = "access") {
-	const user = token && await parseUser(token, tokenType);
-	return !!user;
+	const parsed = token && await parseUser(token, tokenType);
+	return !!(parsed && (parsed.user || parsed.expired));
 }
 
 export async function createAccessToken(userId: string) {

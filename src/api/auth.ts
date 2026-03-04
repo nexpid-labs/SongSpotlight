@@ -84,7 +84,7 @@ auth.get("/authorize", async function authorize(c) {
 
 auth.post("/refresh", async (c) => {
 	const accessToken = await c.req.text();
-	if (!accessToken || !await isValid(accessToken)) {
+	if (!await isValid(accessToken)) {
 		return c.text("Invalid access token", HttpStatus.BAD_REQUEST);
 	}
 
