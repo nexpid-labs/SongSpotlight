@@ -14,7 +14,7 @@ export default defineConfig([
 	globalIgnores([
 		".wrangler",
 		"bundled",
-		"dist",
+		"**/dist",
 		"worker-configuration.d.ts",
 	]),
 	{

@@ -1,6 +1,6 @@
 // Generates example data for testing
 
-import type { Song, UserData } from "../../src/lib/db";
+import type { Song, UserData } from "@song-spotlight/api/structs";
 
 // Mainly uses songs of/references to Kevin Macleod (KM) and Jane Remover (JR)
 export const mockRecord = {

@@ -5,7 +5,7 @@ import {
 	Routes,
 } from "discord-api-types/v10";
 import { Hono } from "hono";
-import { createToken } from "lib/auth";
+import { createAccessToken, createRefreshToken, getUser, isValid } from "lib/auth";
 import { HttpStatus } from "lib/http-status";
 import { logger } from "lib/logger";
 
@@ -78,7 +78,23 @@ auth.get("/authorize", async function authorize(c) {
 		})
 	).json<RESTGetAPICurrentUserResult>();
 
-	return c.text(await createToken(id));
+	c.header("X-Refresh-Token", await createRefreshToken(id));
+	return c.text(await createAccessToken(id));
+});
+
+auth.post("/refresh", async (c) => {
+	const accessToken = await c.req.text();
+	if (!await isValid(accessToken)) {
+		return c.text("Invalid access token", HttpStatus.BAD_REQUEST);
+	}
+
+	const refreshToken = c.req.header("X-Refresh-Token");
+	const user = await getUser(refreshToken, "refresh");
+	if (!user) {
+		return c.text("Invalid X-Refresh-Token token", HttpStatus.BAD_REQUEST);
+	}
+
+	return c.text(await createAccessToken(user.userId));
 });
 
 export default auth;

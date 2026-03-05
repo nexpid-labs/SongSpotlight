@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@hono-rate-limiter/cloudflare": "^0.2.2",
-		"@song-spotlight/api": "^2.0.0",
+		"@song-spotlight/api": "^2.0.1",
 		"discord-api-types": "^0.38.38",
 		"discord-interactions": "^4.4.0",
 		"hono": "^4.11.7",
@@ -44,7 +44,10 @@
 	"cloudflare": {
 		"bindings": {
 			"JWT_SECRET": {
-				"description": "Randomly generated secret, use `openssl rand -hex 32` to generate"
+				"description": "Randomly generated secret for JWT access tokens, use `openssl rand -hex 32` to generate"
+			},
+			"JWT_REFRESH_SECRET": {
+				"description": "Randomly generated secret for JWT refresh tokens, use `openssl rand -hex 32` to generate"
 			},
 			"CLIENT_ID": {
 				"description": "The Discord OAuth2 application ID"

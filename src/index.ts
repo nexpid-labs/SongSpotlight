@@ -14,7 +14,11 @@ interface Variables {
 }
 
 const app = new Hono<{ Variables: Variables; Bindings: Env }>();
-app.use(cors());
+app.use(cors({
+	origin: "*",
+	allowHeaders: ["*"],
+	exposeHeaders: ["*"],
+}));
 
 // Env assignment
 app.use(async (c, next) => {

@@ -6,7 +6,8 @@ API specification for custom implementations
 
 ### Authentication
 
-Certain routes require authentication in the form of a **JWT token** in the `Authorization` header, or passed as an `auth` query parameter (should only be used in cases where using the header isn't possible). This token is provided by `/api/auth/authorize`.
+Certain routes require authentication in the form of a **JWT access token** in the `Authorization` header, or passed as an `auth` query parameter (should only be used in cases where using the header isn't possible). This access token is provided by `/api/auth/authorize`.
+Please keep in mind that access tokens automatically expire in **12 hours**. This is where refresh tokens come in, they last for **2 years** and are sent via the `X-Refresh-Token` header. Use the `/api/auth/refresh` endpoint to create a new access token from your refresh token
 
 ### Error handling
 
@@ -35,7 +36,11 @@ Format of `{ song: Song, status: boolean }[]`, where `status` indicates whether 
   - `/api/auth`
     - 🟢 **`GET`** `/api/auth/authorize`
       - Requires a `code` query parameter from the [Discord OAuth2 api](https://discord.com/developers/docs/topics/oauth2#authorization-code-grant)
-      - Returns **`200`** `OK` with a signed JWT token used for authentication on success
+      - Returns **`200`** `OK` with a signed JWT access token used for authentication on success, along with a `X-Refresh-Token` header
+      - Returns **`400`** `BAD REQUEST` or **`500`** `INTERNAL SERVER ERROR` on an auth error
+    - 🟣 **`POST`** `/api/auth/refresh`
+      - Requires an access token (can be expired) to be passed as the body along with a refresh token to be passed via the `X-Refresh-Token` header
+      - Returns **`200`** `OK` with a newly created signed JWT access token user for authentication
       - Returns **`400`** `BAD REQUEST` or **`500`** `INTERNAL SERVER ERROR` on an auth error
   - `/api/data`
     - 🟢 **`GET`** `/api/data` [🔒](#authentication)
@@ -43,13 +48,13 @@ Format of `{ song: Song, status: boolean }[]`, where `status` indicates whether 
       - Returns **`500`** `INTERNAL SERVER ERROR` on an unknown server error
     - 🟢 **`GET`** `/api/data/:id` [🔒](#authentication)
       - Requires an `id` path parameter in the form of a Discord user ID [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
+        - The `Last-Modified` header is set to `1970-01-01T00:00:00.000Z` if the data was last altered by a third party
       - Returns **`200`** `OK` with [the user's saved songs](#data-format) (includes a `Last-Modified` header) on success
       - Returns **`500`** `INTERNAL SERVER ERROR` on an unknown server error
     - 🟠 **`PUT`** `/api/data/:id?` [🔒](#authentication)
       - Allows an optional `id` path parameter in the form of a Discord user ID [Snowflake](https://discord.com/developers/docs/reference#snowflakes)
         - Unless the authenticated user is `env.ADMIN_USER_ID`, the provided `id` must be their own
         - If the user is indeed `env.ADMIN_USER_ID`, the body is saved to the provided `id` instead of the user's ID
-          - The `Last-Modified` header is set to `1970-01-01T00:00:00.000Z` to indicate third party alteration
       - Requires an `application/json` body in the format of [saved songs](#data-format)
       - Returns **`200`** `OK` with `true` on success
       - Returns **`400`** `BAD REQUEST` with helpful zod error messages on invalid body (`string`) or [invalid songs](#invalid-song-format) (`json`)
