@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@hono-rate-limiter/cloudflare": "^0.2.2",
-		"@song-spotlight/api": "./packages/api",
+		"@song-spotlight/api": "^2.1.3",
 		"discord-api-types": "^0.38.38",
 		"discord-interactions": "^4.4.0",
 		"hono": "^4.11.7",
