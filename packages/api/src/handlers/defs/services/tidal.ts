@@ -135,7 +135,7 @@ export const tidal: SongService = {
 					audio: previewUrl && data.duration
 						? {
 							previewUrl,
-							duration: data.duration,
+							duration: data.duration * 1e3,
 						}
 						: undefined,
 				},
@@ -167,7 +167,7 @@ export const tidal: SongService = {
 							audio: previewUrl && track.duration
 								? {
 									previewUrl,
-									duration: track.duration,
+									duration: track.duration * 1e3,
 								}
 								: undefined,
 						};
