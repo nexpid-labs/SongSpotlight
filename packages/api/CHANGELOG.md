@@ -1,3 +1,11 @@
+# v2.1.2
+
+- Fixed **Tidal** audio duration
+
+# v2.1.1
+
+- Fixed **Tidal** link parsing
+
 # v2.1.0
 
 - Added support for [**Tidal**](https://tidal.com/)
