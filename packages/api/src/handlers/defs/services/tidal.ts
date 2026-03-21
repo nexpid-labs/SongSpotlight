@@ -86,6 +86,7 @@ export const tidal: SongService = {
 	label: "Tidal",
 	hosts: [
 		"tidal.com",
+		"www.tidal.com",
 		"listen.tidal.com",
 	],
 	types: ["artist", "album", "playlist", "track"],
