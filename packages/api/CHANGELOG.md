@@ -1,3 +1,7 @@
+# v2.1.0
+
+- Added support for [**Tidal**](https://tidal.com/)
+
 # v2.0.1
 
 - Fixed issues with `song.link` parsing

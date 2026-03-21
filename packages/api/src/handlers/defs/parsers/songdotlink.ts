@@ -49,7 +49,8 @@ export const songdotlink: SongParser = {
 
 		const valid = links.find(x => x.platform === "spotify")
 			?? links.find(x => x.platform === "soundcloud")
-			?? links.find(x => x.platform === "appleMusic");
+			?? links.find(x => x.platform === "appleMusic")
+			?? links.find(x => x.platform === "tidal");
 		if (!valid) return null;
 
 		return await parseLink(valid.url);
