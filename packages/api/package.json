@@ -49,8 +49,5 @@
 	},
 	"optionalDependencies": {
 		"zod": "^4.3.6"
-	},
-	"dependencies": {
-		"@song-spotlight/api": "^2.1.3"
 	}
 }
