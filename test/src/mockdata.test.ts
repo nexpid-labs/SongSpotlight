@@ -1,11 +1,12 @@
 // Generates mock data for testing
 
-import type { Song, UserData } from "../../src/lib/db";
+import type { Song, UserData } from "@song-spotlight/api/structs";
 
 const record = {
 	spotify: ["track", "album", "playlist", "artist"],
 	soundcloud: ["user", "track", "playlist"],
 	applemusic: ["artist", "song", "album", "playlist"],
+	tidal: ["artist", "track", "album", "playlist"],
 };
 
 const mockData: UserData = Object.entries(record).flatMap(([service, x]) =>

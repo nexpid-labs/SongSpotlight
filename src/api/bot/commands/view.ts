@@ -15,9 +15,10 @@ import {
 import { ApiUserData, getUserData } from "lib/db";
 
 const serviceEmojis = {
-	spotify: "<:spotifyicon:1468330196414369905>",
-	soundcloud: "<:soundcloudicon:1468330194971394339>",
-	applemusic: "<:applemusicicon:1468330193688199250>",
+	applemusic: "<:applemusicicon:1484896704338858035>",
+	spotify: "<:spotifyicon:1484896705718784162>",
+	soundcloud: "<:soundcloudicon:1484896702736371743>",
+	tidal: "<:tidalicon:1484917295880077382>",
 } as Record<string, string>;
 
 export function formatDurationMs(ms: number) {
@@ -107,7 +108,7 @@ export async function viewSongs(
 						{
 							type: ComponentType.TextDisplay,
 							content: lines([
-								`### [${clamp(render.label)}](${render.link}) ${serviceEmojis[song.service]}`,
+								`### [${clamp(render.label)}](${render.link}) ${serviceEmojis[song.service] || ""}`,
 								isUser ? clamp(render.sublabel) : `by **${clamp(render.sublabel)}**`,
 							]),
 						},

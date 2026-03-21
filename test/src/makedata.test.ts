@@ -38,8 +38,8 @@ export const mockRecord = {
 			"52019567",
 		],
 		track: [
-			"1962051643", // KM
-			"1962051607", // KM
+			"1013787601", // NCS
+			"2287384898", // NCS
 			"2152314354", // JR
 			"2051221096", // JR
 		],
@@ -67,7 +67,7 @@ export const mockRecord = {
 			"1680716145", // KM
 			"1779127650", // KM
 			"1800020675", // JR
-			"1745245207", // JR
+			"1856018518", // JR
 		],
 		playlist: [
 			// Apple Music doesn't let me search public playlists, so
@@ -76,6 +76,32 @@ export const mockRecord = {
 			"pl.87bb5b36a9bd49db8c975607452bfa2b",
 			"pl.e79d63bcaead407fb44a0c19380822e6",
 			"pl.f4d106fed2bd41149aaacabb233eb5eb",
+		],
+	},
+	tidal: {
+		artist: [
+			"3879950", // KM
+			"1798",
+			"32199968", // JR
+			"7274907",
+		],
+		track: [
+			"273418079", // KM
+			"273419652", // KM
+			"421826031", // JR
+			"421826030", // JR
+		],
+		album: [
+			"49651290", // KM
+			"49651257", // KM
+			"421826023", // JR
+			"476707123", // JR
+		],
+		playlist: [
+			"24a4254c-9e8a-4fb2-a23a-3ae0dd5d3f52",
+			"298aa047-e23a-46ad-ac98-527572313803",
+			"a8f12586-f37d-4a46-bd34-636f56198a72",
+			"5c5b6b67-2fa3-4a00-b9fd-814d1a7a4d5d",
 		],
 	},
 };

@@ -15,8 +15,9 @@ import { logger } from "lib/logger";
 import { SillyService } from "./service";
 
 const description = `Show off songs on your Discord profile!
-« https://github.com/nexpid-labs/SongSpotlight »
-« https://revenge.nexpid.xyz/song-spotlight »`;
+« https://equicord.org/plugins/SongSpotlight »
+« https://revenge.nexpid.xyz/song-spotlight »
+« https://github.com/nexpid-labs/SongSpotlight »`;
 
 export async function runSilly() {
 	if (!process.env.CLIENT_TOKEN) {
