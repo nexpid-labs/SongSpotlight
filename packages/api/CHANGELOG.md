@@ -1,3 +1,7 @@
+# v2.1.3
+
+- Added missing `www.tidal.com` url to **Tidal** service :)
+
 # v2.1.2
 
 - Fixed **Tidal** audio duration
