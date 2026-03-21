@@ -90,7 +90,11 @@ export const tidal: SongService = {
 	],
 	types: ["artist", "album", "playlist", "track"],
 	async parse(_link, _host, path) {
-		const [type, id] = path;
+		const [typeFoo, idFoo, typeBar, idBar] = path;
+
+		// /album/273418078/track/273418079
+		const type = typeBar && idBar ? typeBar : typeFoo,
+			id = typeBar && idBar ? idBar : idFoo;
 		if (!type || !this.types.includes(type) || !id) return null;
 
 		if (type === "playlist" && !/^[-a-f0-9]+$/.test(id)) return null;
