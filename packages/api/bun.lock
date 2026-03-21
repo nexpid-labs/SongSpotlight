@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "@song-spotlight/api",
+      "dependencies": {
+        "@song-spotlight/api": "^2.1.3",
+      },
       "devDependencies": {
         "@types/bun": "^1.3.8",
         "rolldown": "^1.0.0-rc.3",
@@ -73,6 +76,8 @@
     "@rolldown/binding-win32-x64-msvc": ["@rolldown/binding-win32-x64-msvc@1.0.0-rc.3", "", { "os": "win32", "cpu": "x64" }, "sha512-a4VUQZH7LxGbUJ3qJ/TzQG8HxdHvf+jOnqf7B7oFx1TEBm+j2KNL2zr5SQ7wHkNAcaPevF6gf9tQnVBnC4mD+A=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.0-rc.3", "", {}, "sha512-eybk3TjzzzV97Dlj5c+XrBFW57eTNhzod66y9HrBlzJ6NsCrWCp/2kaPS3K9wJmurBC0Tdw4yPjXKZqlznim3Q=="],
+
+    "@song-spotlight/api": ["@song-spotlight/api@2.1.3", "", { "optionalDependencies": { "zod": "^4.3.6" }, "peerDependencies": { "typescript": "^5" } }, "sha512-Wai7JHd9lrHtM/lkhfWQIFjIWKtP8iD+zj4Lnwbs/ykELR0MB2k56TDnQaRAelvu8XOygt27wfDBDQSEepPqdA=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
