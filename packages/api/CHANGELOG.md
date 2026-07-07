@@ -1,3 +1,9 @@
+# v2.1.4
+
+- Added expiry for **SoundCloud** and **Tidal** songs
+- Added custom preview time chunks for **SoundCloud** songs
+- Other miscellaneous fixes
+
 # v2.1.3
 
 - Added missing `www.tidal.com` url to **Tidal** service :)
