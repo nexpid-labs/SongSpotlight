@@ -11,11 +11,6 @@ export const $ = {
 	parsers: [] as SongParser[],
 };
 
-// parseLink -> parseCache, validateCache
-// rebuildLink -> linkCache, validateCache
-// renderSong -> renderCache, validateCache
-// validateSong -> validateCache
-
 const parseCache = new Map<string, Song | null>();
 const validateCache = new Map<string, boolean>();
 /**
@@ -55,7 +50,8 @@ const renderCache = new Map<string, RenderSongInfo | null>();
  */
 export async function renderSong(song: Song): Promise<RenderSongInfo | null> {
 	const id = sid(song);
-	if (renderCache.has(id)) return renderCache.get(id)!;
+	const cached = renderCache.get(id);
+	if (cached !== undefined && (!cached?.expiresAt || cached.expiresAt > Date.now())) return cached;
 
 	let info: RenderSongInfo | null = null;
 	const service = $.services.find(x => x.name === song.service);

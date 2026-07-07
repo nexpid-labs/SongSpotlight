@@ -1,6 +1,6 @@
 import { PLAYLIST_LIMIT, request } from "handlers/common";
 import { parseLink } from "handlers/finders";
-import { type RenderInfoBase, type SongService } from "handlers/helpers";
+import { type RenderInfoBase, type RenderInfoEntry, type SongService } from "handlers/helpers";
 
 interface oEmbedData {
 	html: string;
@@ -11,6 +11,7 @@ interface Transcoding {
 	url: string;
 	format: {
 		protocol: string;
+		mime_type: string;
 	};
 }
 
@@ -52,17 +53,25 @@ async function parseWidget(type: string, id: string, tracks: boolean) {
 			format: "json",
 			client_id,
 			// app version isnt static but lets hope soundcloud doesnt mind :) :) :)
-			app_version: "1768986291",
+			app_version: "1782997503",
 			limit: "20",
 		},
 	})).json;
 }
-async function parsePreview(transcodings: Transcoding[]) {
-	const preview = transcodings.sort((a, b) => {
-		const isA = a.format.protocol === "progressive";
-		const isB = b.format.protocol === "progressive";
 
-		return (isA && !isB) ? -1 : (isB && !isA) ? 1 : 0;
+function filterPreview(track: Transcoding) {
+	return track.format.protocol === "progressive" && track.format.mime_type === "audio/mpeg"
+		&& track?.url && track?.duration;
+}
+
+const previewPoint = 0.4;
+const previewDuration = 25e3;
+
+async function parsePreview(
+	transcodings: Transcoding[],
+): Promise<NonNullable<RenderInfoEntry["audio"]> | undefined> {
+	const preview = transcodings.sort((a, b) => {
+		return +filterPreview(b) - +filterPreview(a);
 	})?.[0];
 
 	if (preview?.url && preview?.duration) {
@@ -75,10 +84,46 @@ async function parsePreview(transcodings: Transcoding[]) {
 			.json as PreviewResponse;
 		if (!link?.url) return;
 
-		return {
-			duration: preview.duration,
-			previewUrl: link.url,
+		// check if its valid
+		if (preview.duration >= 1e3) {
+			const previewChunk = Math.min(previewDuration, preview.duration);
+			const previewStart = Math.ceil((preview.duration * previewPoint) - previewChunk / 2);
+
+			return {
+				duration: preview.duration,
+				previewUrl: link.url,
+				previewStart,
+				previewSlice: Math.min(previewChunk, preview.duration - previewStart),
+			};
+		} else {
+			return {
+				duration: preview.duration,
+				previewUrl: link.url,
+			};
+		}
+	}
+}
+
+interface CFPolicy {
+	Statement: [{
+		Condition: {
+			DateLessThan: {
+				["AWS:EpochTime"]: number;
+			};
 		};
+	}];
+}
+
+function extractExpiry(url: string) {
+	try {
+		const policy = new URL(url).searchParams.get("Policy");
+		if (!policy) return undefined;
+
+		const data = JSON.parse(atob(policy.replace(/_/g, "="))) as CFPolicy;
+		const expiry = data.Statement[0].Condition.DateLessThan["AWS:EpochTime"];
+		return expiry * 1e3;
+	} catch {
+		return undefined;
 	}
 }
 
@@ -155,6 +200,7 @@ export const soundcloud: SongService = {
 				single: {
 					audio,
 				},
+				expiresAt: audio ? extractExpiry(audio.previewUrl) : undefined,
 			};
 		} else {
 			let tracks: WidgetData[] = [];
@@ -165,19 +211,24 @@ export const soundcloud: SongService = {
 				if (data.tracks) tracks = data.tracks;
 			}
 
+			const list = await Promise.all(
+				tracks.filter(x => x.title).slice(0, PLAYLIST_LIMIT).map(async (track) => ({
+					label: track.title,
+					sublabel: track.user?.username ?? "unknown",
+					link: track.permalink_url,
+					explicit: Boolean(track.publisher_metadata!.explicit),
+					audio: await parsePreview(track.media?.transcodings ?? []).catch(() => undefined),
+				})),
+			);
+			const expires = list.map(({ audio }) => audio ? extractExpiry(audio.previewUrl) : undefined)
+				.filter(x => typeof x === "number");
+
 			return {
 				form: "list",
 				...base,
 				thumbnailUrl,
-				list: await Promise.all(
-					tracks.filter(x => x.title).slice(0, PLAYLIST_LIMIT).map(async (track) => ({
-						label: track.title,
-						sublabel: track.user?.username ?? "unknown",
-						link: track.permalink_url,
-						explicit: Boolean(track.publisher_metadata!.explicit),
-						audio: await parsePreview(track.media?.transcodings ?? []).catch(() => undefined),
-					})),
-				),
+				list,
+				expiresAt: expires[0] ? Math.min(...expires) : undefined,
 			};
 		}
 	},

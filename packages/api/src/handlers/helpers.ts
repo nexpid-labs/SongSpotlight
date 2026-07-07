@@ -20,12 +20,15 @@ export interface RenderInfoBase {
 	sublabel: string;
 	explicit: boolean;
 	link: string;
+	expiresAt?: number;
 }
 
 export interface RenderInfoEntry {
 	audio?: {
 		duration: number;
 		previewUrl: string;
+		previewStart?: number;
+		previewSlice?: number;
 	};
 }
 export type RenderInfoEntryBased = RenderInfoEntry & RenderInfoBase;

@@ -10,9 +10,7 @@ interface TidalInfo {
 	duration?: number;
 	picture?: string;
 	squareImage?: string;
-	album?: {
-		cover: string;
-	};
+	cover?: string;
 	creator?: {
 		name: string;
 	};
@@ -81,6 +79,18 @@ function prettyLink(link: string) {
 	}
 }
 
+function extractExpiry(url: string) {
+	try {
+		const token = new URL(url).searchParams.get("token");
+		if (!token) return undefined;
+
+		const timestamp = Number(token.split("~")[0]);
+		return !Number.isNaN(timestamp) ? timestamp * 1e3 : undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 export const tidal: SongService = {
 	name: "tidal",
 	label: "Tidal",
@@ -120,7 +130,7 @@ export const tidal: SongService = {
 			link: prettyLink(data.url),
 			explicit: Boolean(data.explicit),
 		};
-		const thumbnailKey = data.picture ?? data.squareImage ?? data.album?.cover;
+		const thumbnailKey = data.picture ?? data.squareImage ?? data.cover;
 		const thumbnailUrl = thumbnailKey
 			? `https://resources.tidal.com/images/${thumbnailKey.replace(/-/g, "/")}/160x160.jpg`
 			: undefined;
@@ -140,6 +150,7 @@ export const tidal: SongService = {
 						}
 						: undefined,
 				},
+				expiresAt: previewUrl ? extractExpiry(previewUrl) : undefined,
 			};
 		} else {
 			const tracks = await getInfo<TidalTracks>(
@@ -150,30 +161,34 @@ export const tidal: SongService = {
 					limit: String(PLAYLIST_LIMIT),
 				},
 			);
+			const list = await Promise.all(
+				tracks?.items.slice(0, PLAYLIST_LIMIT).map(async (track) => {
+					const previewUrl = track.duration
+						&& await getAudioPreview(track.id).catch(() => undefined);
+
+					return {
+						label: track.title,
+						sublabel: track.artists.map(x => x.name).join(", "),
+						link: prettyLink(track.url),
+						explicit: Boolean(track.explicit),
+						audio: previewUrl && track.duration
+							? {
+								previewUrl,
+								duration: track.duration * 1e3,
+							}
+							: undefined,
+					};
+				}) ?? [],
+			);
+			const expires = list.map(({ audio }) => audio ? extractExpiry(audio.previewUrl) : undefined)
+				.filter(x => typeof x === "number");
 
 			return {
 				form: "list",
 				...base,
 				thumbnailUrl,
-				list: await Promise.all(
-					tracks?.items.slice(0, PLAYLIST_LIMIT).map(async (track) => {
-						const previewUrl = track.duration
-							&& await getAudioPreview(track.id).catch(() => undefined);
-
-						return {
-							label: track.title,
-							sublabel: track.artists.map(x => x.name).join(", "),
-							link: prettyLink(track.url),
-							explicit: Boolean(track.explicit),
-							audio: previewUrl && track.duration
-								? {
-									previewUrl,
-									duration: track.duration * 1e3,
-								}
-								: undefined,
-						};
-					}) ?? [],
-				),
+				list,
+				expiresAt: expires[0] ? Math.min(...expires) : undefined,
 			};
 		}
 	},

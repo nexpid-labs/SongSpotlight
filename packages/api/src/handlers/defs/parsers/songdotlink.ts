@@ -18,6 +18,7 @@ interface Next {
 }
 
 const alphabeticRegex = /^[^-_][a-z0-9-_]+[^-_]$/i;
+const platforms = ["spotify", "soundcloud", "appleMusic", "tidal"];
 
 export const songdotlink: SongParser = {
 	name: "song.link",
@@ -47,12 +48,14 @@ export const songdotlink: SongParser = {
 
 		const links = sections.flatMap(x => x.links ?? []).filter(x => x.url && x.platform);
 
-		const valid = links.find(x => x.platform === "spotify")
-			?? links.find(x => x.platform === "soundcloud")
-			?? links.find(x => x.platform === "appleMusic")
-			?? links.find(x => x.platform === "tidal");
-		if (!valid) return null;
+		for (const platform of platforms) {
+			const link = links.find(x => x.platform === platform);
+			if (link) {
+				const parsed = await parseLink(link.url);
+				if (parsed) return parsed;
+			}
+		}
 
-		return await parseLink(valid.url);
+		return null;
 	},
 };
