@@ -19,6 +19,8 @@ interface WidgetData {
 	artwork_url: string;
 	avatar_url?: string;
 	title: string;
+	policy: string;
+	uri: string;
 	id: number;
 	permalink_url: string;
 	username?: string;
@@ -42,21 +44,39 @@ interface PreviewResponse {
 	url: string;
 }
 
-const client_id = "nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic";
+const client_id = "nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic",
+	// app version changes often but let's hope soundcloud doesnt mind :) :) :)
+	app_version = "1782997503";
 
-function parseWidget(type: string, id: string, tracks: true): Promise<TracksWidgetData | undefined>;
-function parseWidget(type: string, id: string, tracks: false): Promise<WidgetData | undefined>;
-async function parseWidget(type: string, id: string, tracks: boolean) {
+function parseWidget(type: string, id: string, tracks: true): Promise<TracksWidgetData | null>;
+function parseWidget(type: string, id: string, tracks?: false): Promise<WidgetData | null>;
+async function parseWidget(type: string, id: string, tracks?: boolean) {
 	return (await request({
 		url: `https://api-widget.soundcloud.com/${type}s/${id}${tracks ? "/tracks" : ""}`,
 		query: {
 			format: "json",
-			client_id,
-			// app version isnt static but lets hope soundcloud doesnt mind :) :) :)
-			app_version: "1782997503",
 			limit: "20",
+			client_id,
+			app_version,
 		},
 	})).json;
+}
+
+async function parsePlaylistTracks(
+	playlistId: string,
+	trackIds: number[],
+) {
+	return (await request({
+		url: `https://api-widget.soundcloud.com/tracks`,
+		query: {
+			ids: trackIds.join(","),
+			playlistId,
+			playlistSecretToken: "",
+			format: "json",
+			client_id,
+			app_version,
+		},
+	})).json as WidgetData[] | null;
 }
 
 function filterPreview(track: Transcoding) {
@@ -65,7 +85,7 @@ function filterPreview(track: Transcoding) {
 }
 
 const previewPoint = 0.4;
-const previewDuration = 25e3;
+const previewDuration = 30e3;
 
 async function parsePreview(
 	transcodings: Transcoding[],
@@ -87,7 +107,7 @@ async function parsePreview(
 		// check if its valid
 		if (preview.duration >= 1e3) {
 			const previewChunk = Math.min(previewDuration, preview.duration);
-			const previewStart = Math.ceil((preview.duration * previewPoint) - previewChunk / 2);
+			const previewStart = Math.ceil(preview.duration * previewPoint);
 
 			return {
 				duration: preview.duration,
@@ -179,7 +199,7 @@ export const soundcloud: SongService = {
 		}
 	},
 	async render(type, id) {
-		const data = await parseWidget(type, id, false);
+		const data = await parseWidget(type, id);
 		if (!data?.id) return null;
 
 		const base: RenderInfoBase = {
@@ -207,12 +227,24 @@ export const soundcloud: SongService = {
 			if (type === "user") {
 				const got = await parseWidget(type, id, true).catch(() => undefined);
 				if (got?.collection) tracks = got.collection;
-			} else {
-				if (data.tracks) tracks = data.tracks;
+			} else if (data.tracks) {
+				tracks = data.tracks;
+
+				const missingIds = tracks.filter(x => x.policy === "ALLOW" && !x.uri).map(x => x.id).slice(
+					0,
+					PLAYLIST_LIMIT,
+				);
+				const retrieved = missingIds.length >= 1 && await parsePlaylistTracks(id, missingIds);
+				if (retrieved) {
+					for (let i = 0; i < tracks.length; i++) {
+						const replaced = retrieved.find(x => x.id === tracks[i]?.id);
+						if (replaced) tracks[i] = replaced;
+					}
+				}
 			}
 
 			const list = await Promise.all(
-				tracks.filter(x => x.title).slice(0, PLAYLIST_LIMIT).map(async (track) => ({
+				tracks.filter(x => x.uri).slice(0, PLAYLIST_LIMIT).map(async (track) => ({
 					label: track.title,
 					sublabel: track.user?.username ?? "unknown",
 					link: track.permalink_url,
@@ -233,6 +265,6 @@ export const soundcloud: SongService = {
 		}
 	},
 	async validate(type, id) {
-		return (await parseWidget(type, id, false))?.id !== undefined;
+		return (await parseWidget(type, id))?.id !== undefined;
 	},
 };
