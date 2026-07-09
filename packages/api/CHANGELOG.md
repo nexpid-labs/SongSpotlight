@@ -1,3 +1,9 @@
+# v2.2.0
+
+- Tweaked **SoundCloud** preview timings
+- Fixed **SoundCloud** playlist track fetching
+- Other miscellaneous changes !!
+
 # v2.1.4
 
 - Added expiry for **SoundCloud** and **Tidal** songs
