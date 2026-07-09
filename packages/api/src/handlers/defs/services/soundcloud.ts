@@ -1,6 +1,6 @@
 import { PLAYLIST_LIMIT, request } from "handlers/common";
 import { parseLink } from "handlers/finders";
-import { type RenderInfoBase, type RenderInfoEntry, type SongService } from "handlers/helpers";
+import { type RenderInfoBase, type RenderInfoEntryAudio, type SongService } from "handlers/helpers";
 
 interface oEmbedData {
 	html: string;
@@ -89,7 +89,7 @@ const previewDuration = 30e3;
 
 async function parsePreview(
 	transcodings: Transcoding[],
-): Promise<NonNullable<RenderInfoEntry["audio"]> | undefined> {
+): Promise<RenderInfoEntryAudio | undefined> {
 	const preview = transcodings.sort((a, b) => {
 		return +filterPreview(b) - +filterPreview(a);
 	})?.[0];

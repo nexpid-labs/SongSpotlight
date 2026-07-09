@@ -23,13 +23,15 @@ export interface RenderInfoBase {
 	expiresAt?: number;
 }
 
+export interface RenderInfoEntryAudio {
+	duration: number;
+	previewUrl: string;
+	previewStart?: number;
+	previewSlice?: number;
+}
+
 export interface RenderInfoEntry {
-	audio?: {
-		duration: number;
-		previewUrl: string;
-		previewStart?: number;
-		previewSlice?: number;
-	};
+	audio?: RenderInfoEntryAudio;
 }
 export type RenderInfoEntryBased = RenderInfoEntry & RenderInfoBase;
 
