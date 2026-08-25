@@ -17,7 +17,7 @@ export default defineConfig({
 				bindings: {
 					JWT_SECRET: "jwt-access-secret",
 					JWT_REFRESH_SECRET: "jwt-refresh-secret",
-					ADMIN_USER_ID: "admin",
+					ADMIN_USER_ID: "643945264868098049",
 					TEST_SCHEMA: schema,
 				},
 			},
