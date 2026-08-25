@@ -44,9 +44,9 @@ $ bun install --omit=optional
 
 You need:
 
-- [Cloudflare D1 database](https://developers.cloudflare.com/d1/)[^1]
+- [Cloudflare D1 database](https://developers.cloudflare.com/d1/) — [setup](./HOW_TO_D1.md)
 - [Discord application](https://discord.com/developers/applications?new_application=true)
-- Randomly generated JWT secret[^2]
+- Randomly generated JWT secret — `openssl rand -hex 32`
 
 In your Discord application's page, go to the **OAuth2** tab and create a new **OAuth2 Redirect** in the format of `https://your-worker.workers.dev/api/auth/authorize` and `http://localhost:8787/api/auth/authorize`
 
@@ -114,7 +114,7 @@ $ bun install
 
 ## Testing
 
-You can run unit tests via vitest!
+You can run unit tests via **vitest**!
 
 ```bash
 $ bun run test
@@ -125,7 +125,3 @@ $ vitest run
 ## License
 
 MIT
-
-[^1]: setup guide is [here](./HOW_TO_D1.md)
-
-[^2]: run `openssl rand -hex 32`

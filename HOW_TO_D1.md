@@ -16,13 +16,12 @@ Song Spotlight uses an SQL [D1 database](https://developers.cloudflare.com/d1/) 
    ```
 
 3. Copy the `database_name` and `database_id` values from the previous command and replace them in `wrangler.jsonc`
-   - You may notice the database is there twice, which is intentional because otherwise wrangler shouts at me during development
 
-4. Initialize the database both locally (miniflare) and on the real database
+4. Run database migrations both locally (miniflare) and on the production database
 
    ```bash
-   $ bunx wrangler d1 execute DB --local --file ./schema.sql
-   $ bunx wrangler d1 execute DB --remote --yes --file ./schema.sql
+   $ bunx wrangler d1 migrations apply DB --local
+   $ bunx wrangler d1 migrations apply DB --remote
    ```
 
 5. You're done!

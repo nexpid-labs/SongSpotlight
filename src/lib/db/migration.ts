@@ -51,7 +51,7 @@ export function migrateUserData(
 			throw new Error(`Failed to migrate your data to v${latestDataVersion}: ${String(error)}`);
 		}
 	} else {
-		logger.error("Unkown data version", {
+		logger.error("Unknown data version", {
 			userId: data.user,
 			version: data.version,
 			sync: data.songs.slice(0, 20),

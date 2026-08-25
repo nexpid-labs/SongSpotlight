@@ -45,7 +45,8 @@
 		{
 			"binding": "DB",
 			"database_name": "VendettaSongSpotlight",
-			"database_id": "afee2d05-b13b-4c89-8501-84670cd08d2b"
+			"database_id": "afee2d05-b13b-4c89-8501-84670cd08d2b",
+			"migrations_dir": "migrations"
 		}
 	]
 }
