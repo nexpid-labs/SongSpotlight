@@ -17,6 +17,7 @@ export function clean(link: string) {
 		url.search =
 		url.hash =
 			"";
+	if (url.hostname === "open.spotify.com") url.pathname = url.pathname.replace(/^\/intl-[^/]+\//, "/");
 
 	return url.toString().replace(/\/?$/, "");
 }
