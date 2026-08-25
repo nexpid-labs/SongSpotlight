@@ -2,50 +2,50 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "songspotlight",
 	"main": "src/index.ts",
+	"compatibility_date": "2026-08-18",
 	"compatibility_flags": [
-		"nodejs_compat",
+		"nodejs_compat"
 	],
-	"compatibility_date": "2026-01-28",
+	"define": {
+		"IS_PRODUCTION": "false"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"triggers": {
+		"crons": [
+			// the silly service
+			"0 2 * * *"
+		]
+	},
 	"rules": [
 		{
 			"type": "CompiledWasm",
 			"globs": ["**/*.wasm"],
-			"fallthrough": true,
+			"fallthrough": true
 		},
 		{
 			"type": "Text",
 			"globs": ["**/*.svg"],
-			"fallthrough": true,
-		},
+			"fallthrough": true
+		}
 	],
-	"define": {
-		"IS_PRODUCTION": "false",
-	},
-	// Ratelimit of max 20 requests/10s per user (production)
 	"ratelimits": [
 		{
 			"name": "USER_RATELIMIT",
 			"namespace_id": "1001",
+			// ratelimit of max 20 requests/10s per user (production)
 			"simple": {
 				"limit": 20,
-				"period": 10,
-			},
-		},
+				"period": 10
+			}
+		}
 	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "VendettaSongSpotlight",
-			"database_id": "afee2d05-b13b-4c89-8501-84670cd08d2b",
-		},
-	],
-	"observability": {
-		"enabled": true,
-	},
-	"triggers": {
-		"crons": [
-			// the silly service
-			"0 2 * * *",
-		],
-	},
+			"database_id": "afee2d05-b13b-4c89-8501-84670cd08d2b"
+		}
+	]
 }

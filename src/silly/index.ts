@@ -19,6 +19,51 @@ const description = `Show off songs on your Discord profile!
 « https://revenge.nexpid.xyz/song-spotlight »
 « https://github.com/nexpid-labs/SongSpotlight »`;
 
+export function makeSilly() {
+	const colors = SillyService.getRandomColors();
+
+	const avatarSvg = SillyService.toURL(
+		new Resvg(
+			avatar
+				.replace(/#FF0000/g, colors.bg)
+				.replace(/#FFFF00/g, colors.bgWhiter)
+				.replace(/#00FF00/g, colors.cloud)
+				.replace(/#0000FF/g, colors.cloudOutline),
+			{
+				fitTo: { mode: "width", value: 512 },
+				font: { loadSystemFonts: false },
+				shapeRendering: 2,
+			},
+		)
+			.render()
+			.asPng(),
+	);
+	const bannerSvg = SillyService.toURL(
+		new Resvg(
+			banner
+				.replace(/#FF0000/g, colors.bg)
+				.replace(/#FFFF00/g, colors.bgWhiter)
+				.replace(/#00FF00/g, colors.cloud)
+				.replace(/#0000FF/g, colors.cloudOutline),
+			{
+				fitTo: { mode: "width", value: 680 },
+				font: { loadSystemFonts: false },
+				shapeRendering: 2,
+			},
+		)
+			.render()
+			.asPng(),
+	);
+	const fpte = SillyService.getFpte(colors.cloud, colors.bg);
+
+	return {
+		colors,
+		avatarSvg,
+		bannerSvg,
+		fpte,
+	};
+}
+
 export async function runSilly() {
 	if (!process.env.CLIENT_TOKEN) {
 		return logger.info("Silly not ran", { silly: { enabled: false } });
@@ -31,43 +76,8 @@ export async function runSilly() {
 		return;
 	}
 
-	const colors = SillyService.getRandomColors();
+	const { colors, avatarSvg, bannerSvg, fpte } = makeSilly();
 
-	const avatarSvg = SillyService.toURL(
-			new Resvg(
-				avatar
-					.replace(/#FF0000/g, colors.bg)
-					.replace(/#FFFF00/g, colors.bgWhiter)
-					.replace(/#00FF00/g, colors.cloud)
-					.replace(/#0000FF/g, colors.cloudOutline),
-				{
-					fitTo: { mode: "width", value: 512 },
-					font: { loadSystemFonts: false },
-					shapeRendering: 2,
-				},
-			)
-				.render()
-				.asPng(),
-		),
-		bannerSvg = SillyService.toURL(
-			new Resvg(
-				banner
-					.replace(/#FF0000/g, colors.bg)
-					.replace(/#FFFF00/g, colors.bgWhiter)
-					.replace(/#00FF00/g, colors.cloud)
-					.replace(/#0000FF/g, colors.cloudOutline),
-				{
-					fitTo: { mode: "width", value: 680 },
-					font: { loadSystemFonts: false },
-					shapeRendering: 2,
-				},
-			)
-				.render()
-				.asPng(),
-		);
-	const fpte = SillyService.getFpte(colors.cloud, colors.bg);
-
-	// "Bot " is included in the token
 	const id = process.env.CLIENT_ID,
 		token = process.env.CLIENT_TOKEN;
 	const changedIconReq = await fetch(RouteBases.api + Routes.currentApplication(), {

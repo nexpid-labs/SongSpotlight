@@ -6,7 +6,7 @@
 </h1>
 
 <p align="center">
-  A fork of <a href="https://github.com/nexpid/CloudSync">Cloud Sync</a>. A service built using <a href="https://hono.dev/" target="_blank">Hono</a> to show off songs on your Discord profile.
+  A service built using <a href="https://hono.dev/" target="_blank">Hono</a> to show off songs on your Discord profile. Based on <a href="https://github.com/nexpid/CloudSync">Cloud Sync</a>
 </p>
 
 <div align="center">
@@ -64,7 +64,7 @@ $ bunx wrangler secret bulk .dev.vars
 $ bun run dev
 
 # bench the size of your deployment
-$ bun run dry-deploy
+$ bun run deploy-dry
 
 # deploy
 $ bun run deploy
@@ -102,7 +102,7 @@ Then, set **Interactions Endpoint URL** in the **General Information** tab to `h
 $ bunx wrangler secret bulk .dev.vars
 
 # create global commands
-$ bun run commands
+$ bun run make-commands
 ```
 
 To enable the Silly service, run:
@@ -114,7 +114,13 @@ $ bun install
 
 ## Testing
 
-There are some basic tests in the `test` folder, but if you're feeling brave enough, feel free to write some actual unit tests!
+You can run unit tests via vitest!
+
+```bash
+$ bun run test
+# or
+$ vitest run
+```
 
 ## License
 

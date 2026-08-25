@@ -1,7 +1,7 @@
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
-	RESTPostAPIApplicationCommandsJSONBody,
+	type RESTPostAPIApplicationCommandsJSONBody,
 	RouteBases,
 	Routes,
 } from "discord-api-types/v10";

@@ -2,7 +2,7 @@ import {
 	isChatInputApplicationCommandInteraction,
 	isContextMenuApplicationCommandInteraction,
 	isMessageComponentButtonInteraction,
-} from "discord-api-types/utils";
+} from "discord-api-types/utils/v10";
 import {
 	type APIInteraction,
 	APIInteractionResponse,
