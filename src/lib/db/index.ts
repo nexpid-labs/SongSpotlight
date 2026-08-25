@@ -1,22 +1,38 @@
 import { UserData } from "@song-spotlight/api/structs";
 
-import { latestDataVersion, migrateUserData, RawSQLUserData } from "./migration";
+const latestDataVersion = 2;
 
-export type ApiUserData = {
-	data: UserData;
+export interface RawSQLUserData {
+	user: string;
+	version: typeof latestDataVersion;
+	songs: string;
 	at: string;
-};
+}
+
+export interface APIUserData {
+	data: UserData;
+	at?: string;
+}
 
 let env: Env;
 export function assignEnv(_env: Env) {
 	env = _env;
 }
 
-export function sql(
-	query: string,
-	params: string[],
-) {
-	return env.DB.prepare(query).bind(...params);
+export async function getUserData(userId: string): Promise<APIUserData> {
+	const data = await env.DB.prepare("SELECT * FROM data WHERE user = ?").bind(userId).first<
+		RawSQLUserData
+	>();
+	if (!data) {
+		return {
+			data: [],
+		};
+	}
+
+	return {
+		data: JSON.parse(data.songs) as UserData,
+		at: data.at,
+	};
 }
 
 export async function saveUserData(
@@ -24,41 +40,18 @@ export async function saveUserData(
 	data: UserData,
 	at: string,
 ) {
-	return await sql(
-		"insert or replace into data (user, version, songs, at) values (?, ?, ?, ?)",
-		[
-			userId,
-			String(latestDataVersion),
-			JSON.stringify(data),
-			at,
-		],
+	if (data.length === 0) return await deleteUserData(userId);
+
+	return await env.DB.prepare(
+		"INSERT INTO data (user, version, songs, at) VALUES (?, ?, ?, ?) ON CONFLICT (user) DO UPDATE SET version = excluded.version, songs = excluded.songs, at = excluded.at",
+	).bind(
+		userId,
+		latestDataVersion,
+		JSON.stringify(data),
+		at,
 	).run();
 }
 
 export async function deleteUserData(userId: string) {
-	return await sql("delete from data where user = ?", [userId]).run();
-}
-
-export async function getUserData(userId: string): Promise<ApiUserData> {
-	const data = await retrieveUserData(userId);
-	if (!data) {
-		return {
-			data: [],
-			at: new Date().toISOString(),
-		};
-	}
-
-	return {
-		data: JSON.parse(data.data) as UserData,
-		at: data.at,
-	};
-}
-
-export async function retrieveUserData(
-	userId: string,
-): Promise<{ data: string; at: string } | null> {
-	const data = await sql("select * from data where user = ?", [userId]).first<RawSQLUserData>();
-	if (!data) return null;
-
-	return migrateUserData(data, saveUserData);
+	return await env.DB.prepare("DELETE FROM data WHERE user = ?").bind(userId).run();
 }

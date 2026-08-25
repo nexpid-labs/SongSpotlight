@@ -1,1 +1,0 @@
-CREATE TABLE IF NOT EXISTS data ("user" text PRIMARY KEY, "version" integer, "songs" text, "at" text);
