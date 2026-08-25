@@ -22,3 +22,15 @@ export function validate(id: string) {
 
 	return true;
 }
+
+let lastTimestamp = 0n, sequence = 0n;
+export function makeSnowflake() {
+	const timestamp = BigInt(Date.now() - DISCORD_EPOCH);
+	if (timestamp === lastTimestamp) {
+		sequence += 1n;
+	} else {
+		sequence = 0n;
+		lastTimestamp = timestamp;
+	}
+	return ((timestamp << 22n) | (sequence & 0xFFFFFn)).toString();
+}

@@ -1,0 +1,73 @@
+// mostly Kevin MacLeod and Jane Remover <3
+{
+	"spotify": {
+		"track": [
+			"1nqb3MUd1bK0A4N9XgfLx8",
+			"1XD4K4CGAKTIBmFpvuaFru"
+		],
+		"album": [
+			"6LdBDyKwhme6UAiEqQxRDN",
+			"21b4cDNse2AMpj94ykfuON"
+		],
+		"playlist": [
+			"37i9dQZF1DZ06evO2uiXZQ",
+			"37i9dQZF1DZ06evO1oQtnY"
+		],
+		"artist": [
+			"4fSMtiyC6lF5BUO1tUMWMs",
+			"2rLGlNI6htigNxx172qxLu"
+		]
+	},
+	"soundcloud": {
+		"track": [
+			"1962051643",
+			"2379283799"
+		],
+		"playlist": [
+			"287487354",
+			"1591842514"
+		],
+		"user": [
+			"1764285",
+			"603043044"
+		]
+	},
+	"applemusic": {
+		"song": [
+			"1887659174",
+			"1800020687"
+		],
+		"album": [
+			"1680716145",
+			"1800020675"
+		],
+		"playlist": [
+			// random playlists
+			"pl.b5c682bc883e4c62bd96f0f9221f6a56",
+			"pl.49faecf101db4144b7e2fe982a4f57dd"
+		],
+		"artist": [
+			"204264696",
+			"1448393745"
+		]
+	},
+	"tidal": {
+		"track": [
+			"273418079",
+			"421826025"
+		],
+		"album": [
+			"473462651",
+			"476707123"
+		],
+		"playlist": [
+			// random playlists
+			"b196255f-1d8d-46fe-bea4-56f177f089e8",
+			"82afdc69-3bb4-4fb2-856b-8967ecd06eee"
+		],
+		"artist": [
+			"3879950",
+			"32199968"
+		]
+	}
+}

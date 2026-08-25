@@ -12,9 +12,9 @@ const pattern = `{js,mjs,cjs,ts,mts,cts}`;
 
 export default defineConfig([
 	globalIgnores([
+		"**/dist",
 		".wrangler",
 		"bundled",
-		"**/dist",
 		"worker-configuration.d.ts",
 	]),
 	{
@@ -27,15 +27,6 @@ export default defineConfig([
 		extends: ["js/recommended"],
 		languageOptions: {
 			globals: globals.worker,
-		},
-	},
-	{
-		files: [`test/**/*.${pattern}`],
-		languageOptions: {
-			globals: {
-				...globals.node,
-				Bun: false,
-			},
 		},
 	},
 	{
