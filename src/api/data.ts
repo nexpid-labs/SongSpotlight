@@ -119,7 +119,7 @@ data.put(
 			time = 0;
 		}
 		await saveUserData(id, data, new Date(time).toISOString());
-		c.executionCtx.waitUntil(deleteUserCache(c.req.url, userId));
+		c.executionCtx.waitUntil(deleteUserCache(c.req.url, id));
 
 		return c.json(true);
 	},
