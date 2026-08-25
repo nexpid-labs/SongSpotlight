@@ -67,8 +67,8 @@ export const spotify: SongService = {
 	],
 	types: ["track", "album", "playlist", "artist"],
 	async parse(_link, _host, path) {
-		const [type, id, third] = path;
-		if (!type || !this.types.includes(type as never) || !id || third) return null;
+		const [type, id] = path;
+		if (!type || !this.types.includes(type) || !id) return null;
 
 		if (!await this.validate(type, id)) return null;
 

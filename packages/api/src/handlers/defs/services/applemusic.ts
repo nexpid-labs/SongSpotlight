@@ -61,9 +61,16 @@ export const applemusic: SongService = {
 		"geo.music.apple.com",
 	],
 	types: ["artist", "album", "playlist", "song"],
-	async parse(_link, _host, path) {
-		const [country, type, name, id, fourth] = path;
-		if (!country || !type || !this.types.includes(type) || !name || !id || fourth) return null;
+	async parse(link, _host, path) {
+		const params = new URL(link).searchParams;
+		const [country, typeFoo, name, idFoo] = path;
+		if (!country || !typeFoo || !this.types.includes(typeFoo) || !name || !idFoo) return null;
+
+		let type = typeFoo, id = idFoo;
+		if (type === "album" && params.has("i")) {
+			type = "song";
+			id = params.get("i")!;
+		}
 
 		const res = await request({
 			url: applemusicLink(type, id),
