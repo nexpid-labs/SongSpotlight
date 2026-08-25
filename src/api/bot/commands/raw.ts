@@ -4,7 +4,7 @@ import {
 	APIChatInputApplicationCommandInteraction,
 	APIMessageComponentButtonInteraction,
 } from "discord-api-types/v10";
-import { ApiUserData, getUserData } from "lib/db";
+import { APIUserData, getUserData } from "lib/db";
 
 export async function viewRaw(
 	interaction: APIMessageComponentButtonInteraction | APIChatInputApplicationCommandInteraction,
@@ -16,7 +16,7 @@ export async function viewRaw(
 
 	const who = author.id === user.id ? "your" : user.name ? `**${user.name}**'s` : "their";
 
-	let userData: ApiUserData;
+	let userData: APIUserData;
 	try {
 		userData = await getUserData(user.id);
 	} catch {

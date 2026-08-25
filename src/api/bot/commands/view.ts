@@ -12,7 +12,7 @@ import {
 	ComponentType,
 	MessageFlags,
 } from "discord-api-types/v10";
-import { ApiUserData, getUserData } from "lib/db";
+import { APIUserData, getUserData } from "lib/db";
 
 const serviceEmojis = {
 	applemusic: "<:applemusicicon:1484896704338858035>",
@@ -38,7 +38,7 @@ export async function viewSongs(
 ) {
 	await deferReply(interaction, quietFlags(quiet));
 
-	let userData: ApiUserData;
+	let userData: APIUserData;
 	try {
 		userData = await getUserData(user.id);
 	} catch {
