@@ -17,7 +17,7 @@ export async function saveUserData(
 	data: UserData,
 	at: string,
 ) {
-    if (data.length === 0) return await deleteUserData(userId);
+	if (data.length === 0) return await deleteUserData(userId);
 
 	return await env.DB.prepare(
 		"INSERT INTO data (user, version, songs, at) VALUES (?, ?, ?, ?) ON CONFLICT (user) DO UPDATE SET songs = excluded.songs, at = excluded.at",
@@ -37,7 +37,7 @@ export async function getUserData(userId: string): Promise<ApiUserData> {
 	const data = await retrieveUserData(userId);
 	if (!data) {
 		return {
-			data: []
+			data: [],
 		};
 	}
 
