@@ -72,7 +72,9 @@ export async function viewSongs(
 				`# ${user.name}'s Song Spotlight`,
 				adminAbuse
 					? `-# Last updated by a moderator`
-					: `-# Last updated <t:${Math.floor(new Date(at).getTime() / 1000)}:F>`,
+					: at
+					? `-# Last updated <t:${Math.floor(new Date(at).getTime() / 1000)}:F>`
+					: undefined,
 			]),
 		});
 
