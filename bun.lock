@@ -26,7 +26,7 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.67.0",
         "vitest": "^4.1.11",
-        "wrangler": "^4.125.0",
+        "wrangler": "4.125.0",
       },
       "optionalDependencies": {
         "@resvg/resvg-wasm": "^2.6.2",

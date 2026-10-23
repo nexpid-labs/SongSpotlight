@@ -1,18 +1,24 @@
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
-	type RESTPostAPIApplicationCommandsJSONBody,
+	InteractionContextType,
+	type RESTPutAPIApplicationCommandsJSONBody,
 	RouteBases,
 	Routes,
 } from "discord-api-types/v10";
 
 const { CLIENT_ID, CLIENT_TOKEN } = process.env;
 
-const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
+const commands: RESTPutAPIApplicationCommandsJSONBody = [
 	{
 		type: ApplicationCommandType.ChatInput,
 		name: "songspotlight",
 		description: "View someone's Song Spotlight",
+		contexts: [
+			InteractionContextType.BotDM,
+			InteractionContextType.Guild,
+			InteractionContextType.PrivateChannel,
+		],
 		options: [{
 			type: ApplicationCommandOptionType.User,
 			name: "user",
@@ -32,6 +38,11 @@ const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
 	},
 	{
 		type: ApplicationCommandType.User,
+		contexts: [
+			InteractionContextType.BotDM,
+			InteractionContextType.Guild,
+			InteractionContextType.PrivateChannel,
+		],
 		name: "View Song Spotlight",
 	},
 ];
